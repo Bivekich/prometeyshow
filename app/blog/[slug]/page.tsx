@@ -6,11 +6,16 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock } from 'lucide-react';
 import { blogPosts, featuredPost } from '@/data/blog';
 import ReactMarkdown from 'react-markdown';
-import { use } from 'react';
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default function BlogPostPage({ params }: PageProps) {
   const router = useRouter();
-  const { slug } = use(Promise.resolve(params));
+  const { slug } = params;
 
   const post =
     slug === featuredPost.slug
