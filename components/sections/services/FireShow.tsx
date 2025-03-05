@@ -3,33 +3,107 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Card, CardContent } from '@/components/ui/card';
-import { Flame, Clock, Users, Sparkles } from 'lucide-react';
+import { Service, PriceListItem } from '@/types/schema';
+import { Flame, Clock, Users, Sparkles, Star, Target, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import Image from 'next/image';
+import { useState } from 'react';
 
-const features = [
-  {
-    title: 'Сольные выступления',
-    description: 'Впечатляющие номера от профессиональных артистов',
-    icon: Flame,
-    duration: '5-7 минут',
-    performers: '1 артист',
-  },
-  {
-    title: 'Групповые программы',
-    description: 'Синхронные выступления команды артистов',
-    icon: Users,
-    duration: '7-15 минут',
-    performers: '2-6 артистов',
-  },
-  {
-    title: 'Интерактивные шоу',
-    description: 'Вовлечение зрителей в представление',
-    icon: Sparkles,
-    duration: '15-20 минут',
-    performers: '2-4 артиста',
-  },
-];
+interface FireShowProps {
+  services: Service[];
+  prices: PriceListItem[];
+}
 
-const FireShow = () => {
+const iconMap: Record<string, React.ComponentType> = {
+  'Sparkles': Sparkles,
+  'Star': Star,
+  'Target': Target,
+};
+
+interface ImageSliderProps {
+  images: Service['images'];
+}
+
+const ImageSlider = ({ images }: ImageSliderProps) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  if (!images || images.length === 0) return null;
+
+  const handlePrevious = () => {
+    setCurrentImageIndex((prev) => 
+      prev === 0 ? images.length - 1 : prev - 1
+    );
+  };
+
+  const handleNext = () => {
+    setCurrentImageIndex((prev) => 
+      prev === images.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  return (
+    <>
+      <div className="relative aspect-video rounded-lg overflow-hidden mt-6">
+        <Image
+          src={images[currentImageIndex].asset.url}
+          alt="Огненное шоу"
+          fill
+          className="object-cover cursor-pointer"
+          onClick={() => setSelectedImage(images[currentImageIndex].asset.url)}
+        />
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={handlePrevious}
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 p-1.5 rounded-full hover:bg-black/75 transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4 text-white" />
+            </button>
+            <button
+              onClick={handleNext}
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 p-1.5 rounded-full hover:bg-black/75 transition-colors"
+            >
+              <ChevronRight className="w-4 h-4 text-white" />
+            </button>
+          </>
+        )}
+      </div>
+      {images.length > 1 && (
+        <div className="flex justify-center mt-2 gap-1.5">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentImageIndex(index)}
+              className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                index === currentImageIndex ? 'bg-red-500' : 'bg-gray-600'
+              }`}
+            />
+          ))}
+        </div>
+      )}
+      {selectedImage && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
+          <button
+            onClick={() => setSelectedImage(null)}
+            className="absolute top-4 right-4 text-white hover:text-gray-300"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <div className="relative w-full h-full max-w-7xl max-h-[90vh] m-4">
+            <Image
+              src={selectedImage}
+              alt="Огненное шоу"
+              fill
+              className="object-contain"
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default function FireShow({ services }: FireShowProps) {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -53,60 +127,43 @@ const FireShow = () => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="bg-gray-900 border-gray-800 h-full hover:border-red-500/50 transition-colors duration-300">
-                  <CardContent className="p-6">
-                    <feature.icon className="w-12 h-12 text-red-500 mb-6" />
-                    <h3 className="text-xl font-bold text-white mb-4">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-400 mb-6">{feature.description}</p>
-                    <div className="space-y-2">
-                      <div className="flex items-center text-gray-400">
-                        <Clock className="w-5 h-5 mr-2" />
-                        <span>{feature.duration}</span>
+            {services.map((service, index) => {
+              const Icon = service.icon ? iconMap[service.icon] : Sparkles;
+              return (
+                <motion.div
+                  key={service.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card className="bg-gray-900 border-gray-800 h-full hover:border-red-500/50 transition-colors duration-300">
+                    <CardContent className="p-6">
+                      {Icon && <Icon className="w-12 h-12 text-red-500 mb-6" />}
+                      <h3 className="text-xl font-bold text-white mb-4">
+                        {service.title}
+                      </h3>
+                      <p className="text-gray-400 mb-6">{service.description}</p>
+                      <div className="space-y-2">
+                        <div className="flex items-center text-gray-400">
+                          <Clock className="w-5 h-5 mr-2" />
+                          <span>{service.duration}</span>
+                        </div>
+                        {service.performers && (
+                          <div className="flex items-center text-gray-400">
+                            <Users className="w-5 h-5 mr-2" />
+                            <span>{service.performers}</span>
+                          </div>
+                        )}
                       </div>
-                      <div className="flex items-center text-gray-400">
-                        <Users className="w-5 h-5 mr-2" />
-                        <span>{feature.performers}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Галерея изображений */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12">
-            {[1, 2, 3].map((index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={
-                  inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }
-                }
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative aspect-video rounded-lg overflow-hidden"
-              >
-                <img
-                  src={`/images/services/fire-show-${index}.jpg`}
-                  alt={`Огненное шоу ${index}`}
-                  className="object-cover w-full h-full"
-                />
-              </motion.div>
-            ))}
+                      <ImageSlider images={service.images} />
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       </div>
     </section>
   );
-};
-
-export default FireShow;
+}

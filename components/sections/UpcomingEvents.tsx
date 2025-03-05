@@ -9,53 +9,17 @@ import {
   ClockIcon,
   TagIcon,
 } from '@heroicons/react/24/outline';
+import { UpcomingEvent } from '@/types/schema';
 
-interface Event {
-  id: number;
-  title: string;
-  date: string;
-  time: string;
-  location: string;
-  description: string;
-  type: 'public' | 'private';
-  typeLabel: string;
+interface UpcomingEventsProps {
+  events: UpcomingEvent[];
+  sectionData: {
+    title: string;
+    description: string;
+  };
 }
 
-const upcomingEvents: Event[] = [
-  {
-    id: 1,
-    title: 'Огненное шоу на площади',
-    date: '15 марта 2024',
-    time: '20:00',
-    location: 'Центральная площадь',
-    description: 'Грандиозное огненное представление под открытым небом',
-    type: 'public',
-    typeLabel: 'Городское мероприятие',
-  },
-  {
-    id: 2,
-    title: 'Фестиваль света и огня',
-    date: '22 марта 2024',
-    time: '21:00',
-    location: 'Парк культуры',
-    description:
-      'Масштабное шоу с использованием пиротехники и световых эффектов',
-    type: 'public',
-    typeLabel: 'Городской фестиваль',
-  },
-  {
-    id: 3,
-    title: 'Пиротехническое шоу',
-    date: '29 марта 2024',
-    time: '22:00',
-    location: 'Набережная',
-    description: 'Яркое пиротехническое представление у воды',
-    type: 'public',
-    typeLabel: 'Городское мероприятие',
-  },
-];
-
-const UpcomingEvents = () => {
+const UpcomingEvents = ({ events, sectionData }: UpcomingEventsProps) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -70,54 +34,48 @@ const UpcomingEvents = () => {
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Ближайшие выступления
-            </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              Публичные мероприятия, на которых вы можете увидеть наши
-              выступления. Для заказа индивидуального шоу свяжитесь с нами через
-              форму ниже.
-            </p>
-          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-6">
+            {sectionData.title}
+          </h2>
+          <p className="text-gray-400 text-center max-w-3xl mx-auto mb-12">
+            {sectionData.description}
+          </p>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {upcomingEvents.map((event, index) => (
+            {events.map((event, index) => (
               <motion.div
-                key={event.id}
+                key={event.title}
                 initial={{ opacity: 0, y: 50 }}
                 animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card className="bg-gray-900 border-gray-800 h-full hover:border-red-500/50 transition-colors duration-300">
+                <Card className="bg-gray-900 border-gray-800 hover:border-red-500 transition-all duration-300">
                   <CardHeader>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-500">
+                        <TagIcon className="w-4 h-4 mr-1" />
+                        {event.typeLabel}
+                      </span>
+                    </div>
                     <CardTitle className="text-xl text-white">
                       {event.title}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-center text-gray-400">
-                        <TagIcon className="h-5 w-5 mr-2" />
-                        <span className="text-red-400">{event.typeLabel}</span>
-                      </div>
-                      <div className="flex items-center text-gray-400">
-                        <CalendarIcon className="h-5 w-5 mr-2" />
+                  <CardContent className="space-y-4">
+                    <p className="text-gray-400">{event.description}</p>
+                    <div className="space-y-2 text-sm text-gray-400">
+                      <div className="flex items-center">
+                        <CalendarIcon className="w-5 h-5 mr-2" />
                         <span>{event.date}</span>
                       </div>
-                      <div className="flex items-center text-gray-400">
-                        <ClockIcon className="h-5 w-5 mr-2" />
+                      <div className="flex items-center">
+                        <ClockIcon className="w-5 h-5 mr-2" />
                         <span>{event.time}</span>
                       </div>
-                      <div className="flex items-center text-gray-400">
-                        <MapPinIcon className="h-5 w-5 mr-2" />
+                      <div className="flex items-center">
+                        <MapPinIcon className="w-5 h-5 mr-2" />
                         <span>{event.location}</span>
                       </div>
-                      <p className="text-gray-400 mt-4">{event.description}</p>
-                      {event.type === 'public' && (
-                        <p className="text-sm text-gray-500 mt-4 italic">
-                          Вход свободный
-                        </p>
-                      )}
                     </div>
                   </CardContent>
                 </Card>

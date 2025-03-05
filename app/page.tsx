@@ -1,91 +1,109 @@
-'use client';
+import { client } from '@/lib/sanity.client'
+import { VideoBanner, CompanyIntro, HomeStats, UpcomingEvent, MainPageService, MainPageSections } from '@/types/schema'
+import VideoBannerSection from '@/components/sections/VideoBanner'
+import CompanyIntroSection from '@/components/sections/CompanyIntro'
+import ServicesSection from '@/components/sections/Services'
+import StatisticsSection from '@/components/sections/Statistics'
+import UpcomingEventsSection from '@/components/sections/UpcomingEvents'
+import ContactForm from '@/components/sections/ContactForm'
 
-import { useState, useEffect, Suspense } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import dynamic from 'next/dynamic';
-import VideoBanner from '@/components/sections/VideoBanner';
-import CompanyIntro from '@/components/sections/CompanyIntro';
-import Services from '@/components/sections/Services';
-import Statistics from '@/components/sections/Statistics';
-import UpcomingEvents from '@/components/sections/UpcomingEvents';
-import ContactForm from '@/components/sections/ContactForm';
+export const revalidate = 60
 
-// Динамический импорт прелоадера для избежания проблем с SSR
-const Preloader = dynamic(() => import('@/components/Preloader'), {
-  ssr: false,
-});
+async function getVideoBanner() {
+  return client.fetch<VideoBanner>(`
+    *[_type == "videoBanner"][0] {
+      _type,
+      title,
+      subtitle,
+      "videoUrl": {
+        "asset": {
+          "url": videoUrl.asset->url
+        }
+      }
+    }
+  `)
+}
 
-export default function Home() {
-  const [mounted, setMounted] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+async function getCompanyIntro() {
+  return client.fetch<CompanyIntro>(`
+    *[_type == "companyIntro"][0] {
+      _type,
+      title,
+      description,
+      features
+    }
+  `)
+}
 
-  useEffect(() => {
-    setMounted(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+async function getHomeStats() {
+  return client.fetch<HomeStats>(`
+    *[_type == "homeStats"][0] {
+      _type,
+      stats
+    }
+  `)
+}
 
-    return () => clearTimeout(timer);
-  }, []);
+async function getMainPageSections() {
+  return client.fetch<MainPageSections>(`
+    *[_type == "mainPageSections"][0] {
+      _type,
+      servicesSection,
+      eventsSection
+    }
+  `)
+}
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.3,
-        delayChildren: 0.2,
+async function getUpcomingEvents() {
+  return client.fetch<UpcomingEvent[]>(`
+    *[_type == "upcomingEvent"] | order(order asc) {
+      _type,
+      title,
+      date,
+      time,
+      location,
+      description,
+      type,
+      typeLabel,
+      order
+    }
+  `)
+}
+
+async function getMainPageServices() {
+  return client.fetch<MainPageService[]>(`
+    *[_type == "mainPageService"] | order(order asc) {
+      _type,
+      title,
+      description,
+      "image": {
+        "asset": {
+          "url": image.asset->url
+        }
       },
-    },
-  };
+      order
+    }
+  `)
+}
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-      },
-    },
-  };
-
-  if (!mounted) return null;
+export default async function Home() {
+  const [videoBanner, companyIntro, homeStats, sections, upcomingEvents, services] = await Promise.all([
+    getVideoBanner(),
+    getCompanyIntro(),
+    getHomeStats(),
+    getMainPageSections(),
+    getUpcomingEvents(),
+    getMainPageServices(),
+  ])
 
   return (
-    <Suspense fallback={null}>
-      <AnimatePresence>{isLoading && <Preloader />}</AnimatePresence>
-
-      <motion.main
-        className="min-h-screen"
-        initial="hidden"
-        animate={!isLoading ? 'visible' : 'hidden'}
-        variants={containerVariants}
-      >
-        <motion.div variants={itemVariants}>
-          <VideoBanner />
-        </motion.div>
-
-        <motion.div variants={itemVariants}>
-          <CompanyIntro />
-        </motion.div>
-
-        <motion.div variants={itemVariants}>
-          <Services />
-        </motion.div>
-
-        <motion.div variants={itemVariants}>
-          <Statistics />
-        </motion.div>
-
-        <motion.div variants={itemVariants}>
-          <UpcomingEvents />
-        </motion.div>
-
-        <motion.div variants={itemVariants}>
-          <ContactForm />
-        </motion.div>
-      </motion.main>
-    </Suspense>
-  );
+    <main className="min-h-screen">
+      <VideoBannerSection data={videoBanner} />
+      <CompanyIntroSection data={companyIntro} />
+      <ServicesSection services={services} sectionData={sections.servicesSection} />
+      <StatisticsSection data={homeStats} />
+      <UpcomingEventsSection events={upcomingEvents} sectionData={sections.eventsSection} />
+      <ContactForm />
+    </main>
+  )
 }

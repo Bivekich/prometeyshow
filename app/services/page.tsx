@@ -1,39 +1,95 @@
-'use client';
-
-import { motion } from 'framer-motion';
+import { client } from '@/lib/sanity.client'
+import { Service, SpecialOffer, PriceListItem, PageHeaders } from '@/types/schema'
 import FireShow from '@/components/sections/services/FireShow';
 import PyroShow from '@/components/sections/services/PyroShow';
 import SpecialOffers from '@/components/sections/services/SpecialOffers';
 import PriceList from '@/components/sections/services/PriceList';
+import PageHeaderComponent from '@/components/sections/services/PageHeader';
 
-export default function ServicesPage() {
+export const revalidate = 60
+
+async function getServices() {
+  return client.fetch<Service[]>(`
+    *[_type == "service"] | order(order asc) {
+      _type,
+      title,
+      slug,
+      type,
+      description,
+      icon,
+      duration,
+      performers,
+      height,
+      "images": images[]{
+        "asset": {
+          "url": asset->url
+        }
+      },
+      order
+    }
+  `)
+}
+
+async function getSpecialOffers() {
+  return client.fetch<SpecialOffer[]>(`
+    *[_type == "specialOffer"] | order(order asc) {
+      _type,
+      title,
+      description,
+      icon,
+      "image": {
+        "asset": {
+          "url": image.asset->url
+        }
+      },
+      price,
+      features,
+      order
+    }
+  `)
+}
+
+async function getPriceList() {
+  return client.fetch<PriceListItem[]>(`
+    *[_type == "priceListItem"] | order(order asc) {
+      _type,
+      title,
+      duration,
+      price,
+      type,
+      order
+    }
+  `)
+}
+
+async function getPageHeader() {
+  return client.fetch<PageHeaders>(`
+    *[_type == "pageHeaders"][0] {
+      servicesHeader
+    }
+  `)
+}
+
+export default async function ServicesPage() {
+  const [services, specialOffers, priceList, header] = await Promise.all([
+    getServices(),
+    getSpecialOffers(),
+    getPriceList(),
+    getPageHeader(),
+  ])
+
+  const fireServices = services.filter(service => service.type === 'fire')
+  const pyroServices = services.filter(service => service.type === 'pyro')
+  const firePrices = priceList.filter(item => item.type === 'fire')
+  const pyroPrices = priceList.filter(item => item.type === 'pyro')
+
   return (
     <main className="min-h-screen bg-black pt-20">
-      {/* Заголовок страницы */}
-      <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Наши услуги
-            </h1>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Профессиональные огненные и пиротехнические шоу для любых
-              мероприятий
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Основные секции */}
-      <FireShow />
-      <PyroShow />
-      <SpecialOffers />
-      <PriceList />
+      <PageHeaderComponent data={header.servicesHeader} />
+      <FireShow services={fireServices} prices={firePrices} />
+      <PyroShow services={pyroServices} prices={pyroPrices} />
+      <SpecialOffers offers={specialOffers} />
+      <PriceList fireItems={firePrices} pyroItems={pyroPrices} />
     </main>
-  );
+  )
 }

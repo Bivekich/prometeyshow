@@ -4,29 +4,16 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-
-const photos = [
-  {
-    src: '/images/gallery/photo-1.jpg',
-    alt: 'Огненное шоу на городском празднике',
-    category: 'Городские мероприятия',
-  },
-  {
-    src: '/images/gallery/photo-2.jpg',
-    alt: 'Свадебное фаер-шоу',
-    category: 'Свадьбы',
-  },
-  {
-    src: '/images/gallery/photo-3.jpg',
-    alt: 'Пиротехническое шоу',
-    category: 'Пиротехника',
-  },
-  // Добавьте больше фотографий
-];
+import Image from 'next/image';
+import { GalleryPhoto } from '@/types/schema';
 
 const categories = ['Все', 'Городские мероприятия', 'Свадьбы', 'Пиротехника'];
 
-const PhotoGallery = () => {
+interface PhotoGalleryProps {
+  photos: GalleryPhoto[];
+}
+
+const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('Все');
   const [ref, inView] = useInView({
@@ -87,7 +74,7 @@ const PhotoGallery = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredPhotos.map((photo, index) => (
               <motion.div
-                key={photo.src}
+                key={index}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={
                   inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }
@@ -96,10 +83,11 @@ const PhotoGallery = () => {
                 className="relative aspect-square cursor-pointer group"
                 onClick={() => setSelectedImage(index)}
               >
-                <img
-                  src={photo.src}
+                <Image
+                  src={photo.image.asset.url}
                   alt={photo.alt}
-                  className="w-full h-full object-cover rounded-lg"
+                  fill
+                  className="object-cover rounded-lg"
                 />
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center">
                   <div className="text-center p-4">
@@ -151,10 +139,11 @@ const PhotoGallery = () => {
               exit={{ scale: 0.9 }}
               className="relative max-w-4xl max-h-[80vh] w-full"
             >
-              <img
-                src={filteredPhotos[selectedImage].src}
+              <Image
+                src={filteredPhotos[selectedImage].image.asset.url}
                 alt={filteredPhotos[selectedImage].alt}
-                className="w-full h-full object-contain"
+                fill
+                className="object-contain"
               />
               <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/50 text-white text-center">
                 <p className="font-medium mb-1">

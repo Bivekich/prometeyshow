@@ -3,56 +3,21 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { SpecialOffer } from '@/types/schema';
 import { Heart, PartyPopper, Building, Calendar } from 'lucide-react';
 
-const offers = [
-  {
-    title: 'Свадебное шоу',
-    description:
-      'Особая программа для вашего торжества с романтическими элементами и специальными эффектами',
-    icon: Heart,
-    features: [
-      'Огненные сердца',
-      'Пиротехнические фонтаны',
-      'Финальный фейерверк',
-    ],
-  },
-  {
-    title: 'Корпоративные мероприятия',
-    description:
-      'Масштабные шоу-программы для корпоративных праздников и бизнес-событий',
-    icon: Building,
-    features: [
-      'Брендированные элементы',
-      'Логотип компании из огня',
-      'Комбинированное шоу',
-    ],
-  },
-  {
-    title: 'Городские праздники',
-    description:
-      'Яркие представления для массовых мероприятий и городских фестивалей',
-    icon: PartyPopper,
-    features: [
-      'Массовые представления',
-      'Высотные фейерверки',
-      'Интерактивные элементы',
-    ],
-  },
-  {
-    title: 'Сезонные предложения',
-    description:
-      'Специальные программы для новогодних, рождественских и других праздников',
-    icon: Calendar,
-    features: [
-      'Тематическое оформление',
-      'Сезонные элементы',
-      'Праздничные эффекты',
-    ],
-  },
-];
+interface SpecialOffersProps {
+  offers: SpecialOffer[];
+}
 
-const SpecialOffers = () => {
+const iconMap: Record<string, React.ComponentType> = {
+  'Heart': Heart,
+  'PartyPopper': PartyPopper,
+  'Building': Building,
+  'Calendar': Calendar,
+};
+
+export default function SpecialOffers({ offers }: SpecialOffersProps) {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -75,42 +40,43 @@ const SpecialOffers = () => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {offers.map((offer, index) => (
-              <motion.div
-                key={offer.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="bg-gray-900 border-gray-800 h-full hover:border-red-500/50 transition-colors duration-300">
-                  <CardHeader>
-                    <offer.icon className="w-12 h-12 text-red-500 mb-4" />
-                    <CardTitle className="text-xl text-white">
-                      {offer.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-400 mb-6">{offer.description}</p>
-                    <ul className="space-y-2">
-                      {offer.features.map((feature) => (
-                        <li
-                          key={feature}
-                          className="flex items-center text-gray-400"
-                        >
-                          <span className="w-2 h-2 bg-red-500 rounded-full mr-2" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            {offers.map((offer, index) => {
+              const Icon = offer.icon ? iconMap[offer.icon] : Building;
+              return (
+                <motion.div
+                  key={offer.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card className="bg-gray-900 border-gray-800 h-full hover:border-red-500/50 transition-colors duration-300">
+                    <CardHeader>
+                      {Icon && <Icon className="w-12 h-12 text-red-500 mb-4" />}
+                      <CardTitle className="text-xl text-white">
+                        {offer.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-400 mb-6">{offer.description}</p>
+                      <ul className="space-y-2">
+                        {offer.features.map((feature, index) => (
+                          <li
+                            key={index}
+                            className="flex items-center text-gray-400"
+                          >
+                            <span className="w-2 h-2 bg-red-500 rounded-full mr-2" />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       </div>
     </section>
   );
-};
-
-export default SpecialOffers;
+}

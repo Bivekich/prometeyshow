@@ -4,41 +4,13 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Card, CardContent } from '@/components/ui/card';
 import { MapPin } from 'lucide-react';
+import { WorkingCity } from '@/types/schema';
 
-const cities = [
-  {
-    city: 'Санкт-Петербург',
-    description: 'Главный офис и основная команда артистов',
-    events: '500+ выступлений',
-  },
-  {
-    city: 'Москва',
-    description: 'Регулярные выступления и постоянная команда',
-    events: '300+ выступлений',
-  },
-  {
-    city: 'Калининград',
-    description: 'Представительство в западном регионе',
-    events: '100+ выступлений',
-  },
-  {
-    city: 'Сочи',
-    description: 'Курортные и пляжные выступления',
-    events: '150+ выступлений',
-  },
-  {
-    city: 'Екатеринбург',
-    description: 'Представительство в Уральском регионе',
-    events: '100+ выступлений',
-  },
-  {
-    city: 'Казань',
-    description: 'Регулярные выступления в Поволжье',
-    events: '80+ выступлений',
-  },
-];
+interface WorkingCitiesProps {
+  cities: WorkingCity[];
+}
 
-const WorkingCities = () => {
+export default function WorkingCities({ cities }: WorkingCitiesProps) {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -62,9 +34,9 @@ const WorkingCities = () => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cities.map((item, index) => (
+            {cities.map((city, index) => (
               <motion.div
-                key={item.city}
+                key={city.name}
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -77,11 +49,11 @@ const WorkingCities = () => {
                       </div>
                       <div>
                         <h3 className="text-lg font-bold text-white mb-2">
-                          {item.city}
+                          {city.name}
                         </h3>
-                        <p className="text-gray-400 mb-3">{item.description}</p>
+                        <p className="text-gray-400 mb-3">{city.description}</p>
                         <p className="text-red-500 font-medium">
-                          {item.events}
+                          {city.performances}
                         </p>
                       </div>
                     </div>
@@ -101,6 +73,4 @@ const WorkingCities = () => {
       </div>
     </section>
   );
-};
-
-export default WorkingCities;
+}

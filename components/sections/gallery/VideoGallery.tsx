@@ -5,24 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { X, Play } from 'lucide-react';
 import ReactPlayer from 'react-player';
+import Image from 'next/image';
+import { GalleryVideo } from '@/types/schema';
 
-const videos = [
-  {
-    url: '/videos/show-1.mp4',
-    thumbnail: '/images/gallery/video-thumb-1.jpg',
-    title: 'Огненное шоу на Дворцовой площади',
-    description: 'Выступление на День города',
-  },
-  {
-    url: '/videos/show-2.mp4',
-    thumbnail: '/images/gallery/video-thumb-2.jpg',
-    title: 'Пиротехническое шоу',
-    description: 'Новогодний фейерверк',
-  },
-  // Добавьте больше видео
-];
+interface VideoGalleryProps {
+  videos: GalleryVideo[];
+}
 
-const VideoGallery = () => {
+const VideoGallery = ({ videos }: VideoGalleryProps) => {
   const [selectedVideo, setSelectedVideo] = useState<number | null>(null);
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -48,17 +38,18 @@ const VideoGallery = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {videos.map((video, index) => (
               <motion.div
-                key={video.url}
+                key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="relative aspect-video cursor-pointer group"
                 onClick={() => setSelectedVideo(index)}
               >
-                <img
-                  src={video.thumbnail}
+                <Image
+                  src={video.thumbnail.asset.url}
                   alt={video.title}
-                  className="w-full h-full object-cover rounded-lg"
+                  fill
+                  className="object-cover rounded-lg"
                 />
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center">
                   <div className="text-center">
@@ -100,7 +91,7 @@ const VideoGallery = () => {
               className="relative w-full max-w-4xl aspect-video"
             >
               <ReactPlayer
-                url={videos[selectedVideo].url}
+                url={videos[selectedVideo].videoUrl}
                 width="100%"
                 height="100%"
                 controls

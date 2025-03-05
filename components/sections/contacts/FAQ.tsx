@@ -8,41 +8,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { FAQ as FAQType } from '@/types/schema';
 
-const faqItems = [
-  {
-    question: 'Как заказать огненное шоу?',
-    answer:
-      'Чтобы заказать шоу, заполните форму обратной связи на сайте или позвоните нам по телефону. Наш менеджер свяжется с вами для обсуждения деталей и составления программы выступления.',
-  },
-  {
-    question: 'За какое время нужно бронировать шоу?',
-    answer:
-      'Рекомендуем бронировать шоу за 2-3 недели до мероприятия. В высокий сезон (май-сентябрь) лучше сделать это за месяц.',
-  },
-  {
-    question: 'Какие требования к площадке для выступления?',
-    answer:
-      'Необходима ровная площадка размером от 6х6 метров, безопасное расстояние до зрителей - минимум 3 метра. Для пиротехнического шоу требования могут быть другими.',
-  },
-  {
-    question: 'Выступаете ли вы в помещениях?',
-    answer:
-      'Да, у нас есть специальные программы для выступлений в помещениях с соблюдением всех норм безопасности. Необходимо предварительное согласование с площадкой.',
-  },
-  {
-    question: 'Какие способы оплаты вы принимаете?',
-    answer:
-      'Мы принимаем наличные, безналичный расчет для физических и юридических лиц. Предоплата составляет 50% от стоимости шоу.',
-  },
-  {
-    question: 'Что будет в случае плохой погоды?',
-    answer:
-      'В случае неблагоприятных погодных условий мы можем перенести выступление на другую дату или предложить альтернативную программу.',
-  },
-];
+interface FAQProps {
+  faqs: FAQType[];
+}
 
-const FAQ = () => {
+export default function FAQ({ faqs }: FAQProps) {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -66,9 +38,9 @@ const FAQ = () => {
           </p>
 
           <Accordion type="single" collapsible className="space-y-4">
-            {faqItems.map((item, index) => (
+            {faqs.map((faq, index) => (
               <motion.div
-                key={index}
+                key={faq.question}
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -78,10 +50,10 @@ const FAQ = () => {
                   className="bg-gray-900 border border-gray-800 rounded-lg"
                 >
                   <AccordionTrigger className="px-6 text-white hover:text-red-500">
-                    {item.question}
+                    {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="px-6 pb-4 text-gray-400">
-                    {item.answer}
+                    {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
               </motion.div>
@@ -91,6 +63,4 @@ const FAQ = () => {
       </div>
     </section>
   );
-};
-
-export default FAQ;
+}

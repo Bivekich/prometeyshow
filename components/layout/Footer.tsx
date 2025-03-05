@@ -2,6 +2,11 @@
 
 import Link from 'next/link';
 import { Phone, Mail, MapPin, Instagram, Youtube } from 'lucide-react';
+import { Contact } from '@/types/schema';
+
+interface FooterProps {
+  contact: Contact;
+}
 
 const navigation = {
   main: [
@@ -15,12 +20,12 @@ const navigation = {
   social: [
     {
       name: 'Instagram',
-      href: '#',
+      key: 'instagram',
       icon: Instagram,
     },
     {
       name: 'ВКонтакте',
-      href: '#',
+      key: 'vkontakte',
       icon: (props: any) => (
         <svg
           viewBox="0 0 24 24"
@@ -34,7 +39,7 @@ const navigation = {
     },
     {
       name: 'Горько',
-      href: '#',
+      key: 'gorko',
       icon: (props: any) => (
         <svg
           viewBox="0 0 24 24"
@@ -48,12 +53,12 @@ const navigation = {
     },
     {
       name: 'YouTube',
-      href: '#',
+      key: 'youtube',
       icon: Youtube,
     },
     {
       name: 'Rutube',
-      href: '#',
+      key: 'rutube',
       icon: (props: any) => (
         <svg
           viewBox="0 0 24 24"
@@ -68,7 +73,7 @@ const navigation = {
   ],
 };
 
-const Footer = () => {
+const Footer = ({ contact }: FooterProps) => {
   return (
     <footer className="bg-gray-950">
       <div className="container mx-auto px-4 py-12">
@@ -83,17 +88,23 @@ const Footer = () => {
               мероприятий
             </p>
             <div className="flex space-x-4">
-              {navigation.social.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="text-gray-400 hover:text-red-500 transition-colors"
-                  aria-label={item.name}
-                >
-                  <span className="sr-only">{item.name}</span>
-                  <item.icon className="h-6 w-6" />
-                </a>
-              ))}
+              {navigation.social.map((item) => {
+                const href = contact.socialMedia?.[item.key as keyof typeof contact.socialMedia];
+                if (!href) return null;
+                return (
+                  <a
+                    key={item.name}
+                    href={href}
+                    className="text-gray-400 hover:text-red-500 transition-colors"
+                    aria-label={item.name}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="sr-only">{item.name}</span>
+                    <item.icon className="h-6 w-6" />
+                  </a>
+                );
+              })}
             </div>
           </div>
 
@@ -118,28 +129,32 @@ const Footer = () => {
           <div>
             <h3 className="text-white text-lg font-bold mb-4">Контакты</h3>
             <ul className="space-y-4">
+              {contact.phone && (
+                <li>
+                  <a
+                    href={`tel:${contact.phone}`}
+                    className="flex items-center text-gray-400 hover:text-white transition-colors"
+                  >
+                    <Phone className="h-5 w-5 mr-2" />
+                    {contact.phone}
+                  </a>
+                </li>
+              )}
               <li>
                 <a
-                  href="tel:+79001234567"
-                  className="flex items-center text-gray-400 hover:text-white transition-colors"
-                >
-                  <Phone className="h-5 w-5 mr-2" />
-                  +7 (900) 123-45-67
-                </a>
-              </li>
-              <li>
-                <a
-                  href="mailto:info@prometey.ru"
+                  href={`mailto:${contact.email}`}
                   className="flex items-center text-gray-400 hover:text-white transition-colors"
                 >
                   <Mail className="h-5 w-5 mr-2" />
-                  info@prometey.ru
+                  {contact.email}
                 </a>
               </li>
-              <li className="flex items-center text-gray-400">
-                <MapPin className="h-5 w-5 mr-2" />
-                <span>Санкт-Петербург</span>
-              </li>
+              {contact.address && (
+                <li className="flex items-center text-gray-400">
+                  <MapPin className="h-5 w-5 mr-2" />
+                  <span>{contact.address}</span>
+                </li>
+              )}
             </ul>
           </div>
         </div>

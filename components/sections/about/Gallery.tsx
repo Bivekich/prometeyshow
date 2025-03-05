@@ -4,43 +4,14 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { X } from 'lucide-react';
+import { AboutGalleryImage } from '@/types/schema';
+import Image from 'next/image';
 
-const images = [
-  {
-    src: '/images/gallery/1.jpg',
-    alt: 'Огненное шоу на городском празднике',
-  },
-  {
-    src: '/images/gallery/2.jpg',
-    alt: 'Выступление на свадьбе',
-  },
-  {
-    src: '/images/gallery/3.jpg',
-    alt: 'Пиротехническое шоу',
-  },
-  {
-    src: '/images/gallery/4.jpg',
-    alt: 'Огненная хореография',
-  },
-  {
-    src: '/images/gallery/5.jpg',
-    alt: 'Фестиваль огня',
-  },
-  {
-    src: '/images/gallery/6.jpg',
-    alt: 'Корпоративное мероприятие',
-  },
-  {
-    src: '/images/gallery/7.jpg',
-    alt: 'Огненные спецэффекты',
-  },
-  {
-    src: '/images/gallery/8.jpg',
-    alt: 'Выступление на набережной',
-  },
-];
+interface GalleryProps {
+  images: AboutGalleryImage[];
+}
 
-const Gallery = () => {
+const Gallery = ({ images }: GalleryProps) => {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -66,7 +37,7 @@ const Gallery = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {images.map((image, index) => (
               <motion.div
-                key={image.src}
+                key={image.alt}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={
                   inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }
@@ -75,12 +46,15 @@ const Gallery = () => {
                 className="relative group cursor-pointer"
                 onClick={() => setSelectedImage(index)}
               >
-                <div className="aspect-square overflow-hidden rounded-lg">
-                  <img
-                    src={image.src}
-                    alt={image.alt}
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
-                  />
+                <div className="aspect-square overflow-hidden rounded-lg relative">
+                  <div className="absolute inset-0 transition-transform duration-300 group-hover:scale-105">
+                    <Image
+                      src={image.image.asset.url}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                 </div>
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center">
                   <p className="text-white text-center px-4">{image.alt}</p>
@@ -115,10 +89,11 @@ const Gallery = () => {
               className="relative max-w-4xl max-h-[80vh] w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <img
-                src={images[selectedImage].src}
+              <Image
+                src={images[selectedImage].image.asset.url}
                 alt={images[selectedImage].alt}
-                className="w-full h-full object-contain"
+                fill
+                className="object-contain"
               />
               <p className="text-white text-center mt-4">
                 {images[selectedImage].alt}

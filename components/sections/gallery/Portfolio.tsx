@@ -3,36 +3,16 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Image from 'next/image';
+import { PortfolioItem } from '@/types/schema';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
-const portfolioItems = [
-  {
-    title: 'День города Санкт-Петербурга',
-    date: 'Май 2023',
-    description:
-      'Масштабное пиротехническое шоу на Дворцовой площади с участием 12 артистов',
-    image: '/images/portfolio/city-day.jpg',
-    stats: {
-      viewers: '100,000+',
-      duration: '25 минут',
-      artists: '12 человек',
-    },
-  },
-  {
-    title: 'Фестиваль огня',
-    date: 'Июль 2023',
-    description:
-      'Участие в международном фестивале с уникальной программой огненного шоу',
-    image: '/images/portfolio/festival.jpg',
-    stats: {
-      viewers: '50,000+',
-      duration: '40 минут',
-      artists: '8 человек',
-    },
-  },
-  // Добавьте больше мероприятий
-];
+interface PortfolioProps {
+  items: PortfolioItem[];
+}
 
-const Portfolio = () => {
+const Portfolio = ({ items }: PortfolioProps) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -55,22 +35,23 @@ const Portfolio = () => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {portfolioItems.map((item, index) => (
+            {items.map((item, index) => (
               <motion.div
-                key={item.title}
+                key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <Card className="bg-gray-900 border-gray-800 overflow-hidden hover:border-red-500/50 transition-colors duration-300">
                   <div className="relative h-64">
-                    <img
-                      src={item.image}
+                    <Image
+                      src={item.image.asset.url}
                       alt={item.title}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
                     />
                     <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm">
-                      {item.date}
+                      {format(new Date(item.date), 'LLLL yyyy', { locale: ru })}
                     </div>
                   </div>
                   <CardHeader>

@@ -5,35 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Review } from '@/types/schema';
+import { formatDate } from '@/lib/utils';
+import Image from 'next/image';
 
-const reviews = [
-  {
-    id: 1,
-    name: 'Елена Петрова',
-    role: 'Организатор свадебных мероприятий',
-    content:
-      'Потрясающее огненное шоу! Наши молодожены и гости были в полном восторге. Профессиональный подход к организации и исполнению. Рекомендую всем, кто хочет сделать свое мероприятие незабываемым!',
-    image: '/images/reviews/elena.jpg',
-  },
-  {
-    id: 2,
-    name: 'Михаил Иванов',
-    role: 'Директор event-агентства',
-    content:
-      "Работаем с театром огня 'Прометей' уже более 3 лет. Всегда впечатляющие выступления, строгое соблюдение тайминга и техники безопасности. Отдельное спасибо за индивидуальный подход к каждому мероприятию.",
-    image: '/images/reviews/mikhail.jpg',
-  },
-  {
-    id: 3,
-    name: 'Анна Соколова',
-    role: 'Координатор городских мероприятий',
-    content:
-      "Театр 'Прометей' - это всегда яркое и безопасное шоу. Они стали неотъемлемой частью наших городских праздников. Публика в восторге, а это главный показатель качества их работы.",
-    image: '/images/reviews/anna.jpg',
-  },
-];
+interface ReviewsProps {
+  reviews: Review[];
+}
 
-const Reviews = () => {
+export default function Reviews({ reviews }: ReviewsProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -77,11 +57,15 @@ const Reviews = () => {
                 <Quote className="w-12 h-12 text-red-500/20 mb-6" />
                 <div className="flex flex-col md:flex-row items-center gap-8">
                   <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0">
-                    <img
-                      src={reviews[currentIndex].image}
-                      alt={reviews[currentIndex].name}
-                      className="w-full h-full object-cover"
-                    />
+                    {reviews[currentIndex].avatar?.asset?.url && (
+                      <Image
+                        src={reviews[currentIndex].avatar.asset.url}
+                        alt={reviews[currentIndex].author}
+                        width={96}
+                        height={96}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                   </div>
                   <div>
                     <p className="text-gray-300 text-lg mb-6">
@@ -89,10 +73,13 @@ const Reviews = () => {
                     </p>
                     <div>
                       <p className="text-white font-bold">
-                        {reviews[currentIndex].name}
+                        {reviews[currentIndex].author}
                       </p>
                       <p className="text-red-500">
                         {reviews[currentIndex].role}
+                      </p>
+                      <p className="text-gray-500 text-sm mt-1">
+                        {formatDate(reviews[currentIndex].date)}
                       </p>
                     </div>
                   </div>
@@ -100,7 +87,7 @@ const Reviews = () => {
               </motion.div>
             </AnimatePresence>
 
-            {/* Навигация */}
+            {/* Navigation */}
             <div className="flex justify-center gap-4 mt-8">
               <Button
                 variant="outline"
@@ -120,7 +107,7 @@ const Reviews = () => {
               </Button>
             </div>
 
-            {/* Индикаторы */}
+            {/* Indicators */}
             <div className="flex justify-center gap-2 mt-4">
               {reviews.map((_, index) => (
                 <button
@@ -137,6 +124,4 @@ const Reviews = () => {
       </div>
     </section>
   );
-};
-
-export default Reviews;
+}

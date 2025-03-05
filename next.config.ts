@@ -8,6 +8,14 @@ const nextConfig = {
   },
   images: {
     domains: ['prometey.ru'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+        port: '',
+        pathname: '/images/**',
+      },
+    ],
   },
 };
 

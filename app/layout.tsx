@@ -6,8 +6,10 @@ import Footer from '@/components/layout/Footer';
 import { ModalProvider } from '@/contexts/ModalContext';
 import OrderModal from '@/components/modals/OrderModal';
 import { Toaster } from '@/components/ui/toaster';
+import { client } from '@/lib/sanity.client';
+import { Contact } from '@/types/schema';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://prometey.ru'),
@@ -58,18 +60,39 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export const revalidate = 60;
+
+async function getContact() {
+  return client.fetch<Contact>(`
+    *[_type == "contact"][0] {
+      _type,
+      title,
+      email,
+      phone,
+      address,
+      workingHours,
+      socialMedia,
+      contactFormEnabled,
+      contactFormEmail,
+      mapLocation
+    }
+  `);
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const contact = await getContact();
+
   return (
     <html lang="ru">
       <body className={inter.className}>
         <ModalProvider>
           <Header />
           {children}
-          <Footer />
+          <Footer contact={contact} />
           <OrderModal />
           <Toaster />
         </ModalProvider>

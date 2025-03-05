@@ -2,8 +2,13 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { CompanyIntro as CompanyIntroType } from '@/types/schema';
 
-const CompanyIntro = () => {
+interface CompanyIntroProps {
+  data: CompanyIntroType;
+}
+
+const CompanyIntro = ({ data }: CompanyIntroProps) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.2,
@@ -20,28 +25,19 @@ const CompanyIntro = () => {
           className="max-w-4xl mx-auto text-center"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-8">
-            О нашей компании
+            {data.title}
           </h2>
           <p className="text-lg md:text-xl text-gray-300 mb-8">
-            Театр огня "Прометей" - это команда профессиональных артистов,
-            создающих незабываемые огненные шоу с 2015 года. Мы специализируемся
-            на проведении ярких и безопасных выступлений для любых мероприятий.
+            {data.description}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-            <div className="p-6 bg-gray-900 rounded-lg">
-              <h3 className="text-2xl font-bold mb-4">Опыт</h3>
-              <p className="text-gray-400">Более 8 лет в сфере огненных шоу</p>
-            </div>
-            <div className="p-6 bg-gray-900 rounded-lg">
-              <h3 className="text-2xl font-bold mb-4">Безопасность</h3>
-              <p className="text-gray-400">
-                Сертифицированное оборудование и страховка
-              </p>
-            </div>
-            <div className="p-6 bg-gray-900 rounded-lg">
-              <h3 className="text-2xl font-bold mb-4">Профессионализм</h3>
-              <p className="text-gray-400">Команда опытных артистов</p>
-            </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {data.features.map((feature, index) => (
+              <div key={index} className="p-6 bg-gray-900 rounded-lg">
+                <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
+                <p className="text-gray-400">{feature.description}</p>
+              </div>
+            ))}
           </div>
         </motion.div>
       </div>

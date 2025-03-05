@@ -1,39 +1,77 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import ContactForm from '@/components/sections/contacts/ContactForm';
 import WorkingCities from '@/components/sections/contacts/WorkingCities';
 import ContactInfo from '@/components/sections/contacts/ContactInfo';
 import FAQ from '@/components/sections/contacts/FAQ';
+import { client } from '@/lib/sanity.client'
+import PageHeader from '@/components/sections/contacts/PageHeader';
+import { Contact, WorkingCity, FAQ as FAQType, PageHeaders } from '@/types/schema';
 
-export default function ContactsPage() {
+export const revalidate = 60;
+
+async function getContactInfo() {
+  return client.fetch<Contact>(`
+    *[_type == "contact"][0] {
+      title,
+      email,
+      phone,
+      address,
+      workingHours,
+      socialMedia,
+      contactFormEnabled,
+      contactFormEmail,
+      mapLocation
+    }
+  `)
+}
+
+async function getWorkingCities() {
+  return client.fetch<WorkingCity[]>(`
+    *[_type == "workingCity"] | order(order asc) {
+      _type,
+      name,
+      performances,
+      description,
+      "image": image.asset->url,
+      order
+    }
+  `)
+}
+
+async function getFAQs() {
+  return client.fetch<FAQType[]>(`
+    *[_type == "faq"] | order(order asc) {
+      _type,
+      question,
+      answer,
+      category,
+      order
+    }
+  `)
+}
+
+async function getPageHeader() {
+  return client.fetch<PageHeaders>(`
+    *[_type == "pageHeaders"][0] {
+      contactsHeader
+    }
+  `)
+}
+
+export default async function ContactsPage() {
+  const [contactInfo, workingCities, faqs, header] = await Promise.all([
+    getContactInfo(),
+    getWorkingCities(),
+    getFAQs(),
+    getPageHeader()
+  ])
+
   return (
     <main className="min-h-screen bg-black pt-20">
-      {/* Заголовок страницы */}
-      <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Контакты
-            </h1>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Свяжитесь с нами для обсуждения вашего мероприятия или получения
-              дополнительной информации
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Основные секции */}
-      <ContactInfo />
-      <WorkingCities />
+      <PageHeader data={header.contactsHeader} />
+      <ContactInfo contact={contactInfo} />
+      <WorkingCities cities={workingCities} />
       <ContactForm />
-      <FAQ />
+      <FAQ faqs={faqs} />
     </main>
-  );
+  )
 }

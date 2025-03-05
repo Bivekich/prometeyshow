@@ -12,56 +12,30 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { PriceListItem } from '@/types/schema';
 
-const prices = [
-  {
-    category: 'Огненное шоу',
-    items: [
-      {
-        name: 'Сольное выступление',
-        duration: '5-7 минут',
-        price: 'от 15 000 ₽',
-      },
-      {
-        name: 'Групповое шоу (2 артиста)',
-        duration: '7-10 минут',
-        price: 'от 25 000 ₽',
-      },
-      {
-        name: 'Групповое шоу (4 артиста)',
-        duration: '10-15 минут',
-        price: 'от 45 000 ₽',
-      },
-    ],
-  },
-  {
-    category: 'Пиротехническое шоу',
-    items: [
-      {
-        name: 'Наземный фейерверк',
-        duration: '3-5 минут',
-        price: 'от 30 000 ₽',
-      },
-      {
-        name: 'Высотный фейерверк',
-        duration: '5-7 минут',
-        price: 'от 50 000 ₽',
-      },
-      {
-        name: 'Комбинированное шоу',
-        duration: '7-10 минут',
-        price: 'от 80 000 ₽',
-      },
-    ],
-  },
-];
+interface PriceListProps {
+  fireItems: PriceListItem[];
+  pyroItems: PriceListItem[];
+}
 
-const PriceList = () => {
+export default function PriceList({ fireItems = [], pyroItems = [] }: PriceListProps) {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
   const { openOrderModal } = useModal();
+
+  const sections = [
+    {
+      category: 'Огненное шоу',
+      items: fireItems,
+    },
+    {
+      category: 'Пиротехническое шоу',
+      items: pyroItems,
+    },
+  ];
 
   return (
     <section className="py-20 bg-black">
@@ -81,7 +55,7 @@ const PriceList = () => {
           </p>
 
           <div className="space-y-12">
-            {prices.map((section) => (
+            {sections.map((section) => (
               <div key={section.category}>
                 <h3 className="text-2xl font-bold text-white mb-6">
                   {section.category}
@@ -100,22 +74,33 @@ const PriceList = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {section.items.map((item) => (
-                        <TableRow
-                          key={item.name}
-                          className="border-b border-gray-800 hover:bg-gray-900/50"
-                        >
-                          <TableCell className="font-medium text-white">
-                            {item.name}
-                          </TableCell>
-                          <TableCell className="text-gray-400">
-                            {item.duration}
-                          </TableCell>
-                          <TableCell className="text-right text-red-500">
-                            {item.price}
+                      {section.items && section.items.length > 0 ? (
+                        section.items.map((item) => (
+                          <TableRow
+                            key={item.title}
+                            className="border-b border-gray-800 hover:bg-gray-900/50"
+                          >
+                            <TableCell className="font-medium text-white">
+                              {item.title}
+                            </TableCell>
+                            <TableCell className="text-gray-400">
+                              {item.duration}
+                            </TableCell>
+                            <TableCell className="text-right text-red-500">
+                              {item.price}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell
+                            colSpan={3}
+                            className="text-center text-gray-400"
+                          >
+                            Нет доступных предложений в данной категории
                           </TableCell>
                         </TableRow>
-                      ))}
+                      )}
                     </TableBody>
                   </Table>
                 </div>
@@ -140,6 +125,4 @@ const PriceList = () => {
       </div>
     </section>
   );
-};
-
-export default PriceList;
+}
