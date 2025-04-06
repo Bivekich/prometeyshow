@@ -13,7 +13,6 @@ const navigation = [
   { name: 'О нас', href: '/about' },
   { name: 'Услуги', href: '/services' },
   { name: 'Галерея', href: '/gallery' },
-  { name: 'Блог', href: '/blog' },
   { name: 'Контакты', href: '/contacts' },
 ];
 

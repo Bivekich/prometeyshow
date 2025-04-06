@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity'
+import { defineField, defineType } from 'sanity';
 
 export default defineType({
   name: 'galleryVideo',
@@ -19,9 +19,18 @@ export default defineType({
     }),
     defineField({
       name: 'videoUrl',
-      title: 'Video URL',
+      title: 'Video URL (YouTube или другой сервис)',
       type: 'url',
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'videoFile',
+      title: 'Загрузить видеофайл',
+      type: 'file',
+      options: {
+        accept: 'video/*',
+      },
+      description: 'Загрузите видеофайл напрямую (MP4, MOV и т.д.)',
     }),
     defineField({
       name: 'thumbnail',
@@ -39,4 +48,4 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
   ],
-}) 
+});

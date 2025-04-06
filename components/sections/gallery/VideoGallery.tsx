@@ -1,10 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { X, Play } from 'lucide-react';
-import ReactPlayer from 'react-player';
 import Image from 'next/image';
 import { GalleryVideo } from '@/types/schema';
 
@@ -14,10 +13,17 @@ interface VideoGalleryProps {
 
 const VideoGallery = ({ videos }: VideoGalleryProps) => {
   const [selectedVideo, setSelectedVideo] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <section className="py-20 bg-black">
@@ -90,13 +96,49 @@ const VideoGallery = ({ videos }: VideoGalleryProps) => {
               exit={{ scale: 0.9 }}
               className="relative w-full max-w-4xl aspect-video"
             >
-              <ReactPlayer
-                url={videos[selectedVideo].videoUrl}
-                width="100%"
-                height="100%"
-                controls
-                playing
-              />
+              {isMounted && (
+                <div className="relative w-full h-full">
+                  {isLoading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+                    </div>
+                  )}
+                  {error && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                      <div className="text-white text-center p-4">
+                        <p className="text-red-500 mb-2">
+                          Ошибка загрузки видео
+                        </p>
+                        <button
+                          onClick={() => {
+                            setError(null);
+                            setIsLoading(true);
+                          }}
+                          className="px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition-colors"
+                        >
+                          Попробовать снова
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  <video
+                    src={
+                      videos[selectedVideo].videoFile?.url ||
+                      videos[selectedVideo].videoUrl
+                    }
+                    controls
+                    autoPlay
+                    className="w-full h-full rounded-lg"
+                    onLoadStart={() => setIsLoading(true)}
+                    onLoadedData={() => setIsLoading(false)}
+                    onError={(e) => {
+                      console.error('Video loading error:', e);
+                      setError('Не удалось загрузить видео');
+                      setIsLoading(false);
+                    }}
+                  />
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}

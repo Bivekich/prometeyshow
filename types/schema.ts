@@ -92,6 +92,9 @@ export interface GalleryVideo {
   title: string;
   description: string;
   videoUrl: string;
+  videoFile?: {
+    url: string;
+  };
   thumbnail: {
     asset: {
       url: string;
@@ -234,6 +237,18 @@ export interface HistoryEvent {
   order: number;
 }
 
+export interface DocumentFile {
+  _type: 'documentFile';
+  title: string;
+  description: string;
+  file: {
+    asset: {
+      url: string;
+    };
+  };
+  order: number;
+}
+
 export interface VideoBanner {
   _type: 'videoBanner';
   title: string;
@@ -314,4 +329,4 @@ export interface PageHeaders {
   contactsHeader: PageHeader;
   galleryHeader: PageHeader;
   servicesHeader: PageHeader;
-} 
+}

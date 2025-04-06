@@ -1,12 +1,16 @@
-import { client } from '@/lib/sanity.client'
-import { Service, SpecialOffer, PriceListItem, PageHeaders } from '@/types/schema'
-import FireShow from '@/components/sections/services/FireShow';
-import PyroShow from '@/components/sections/services/PyroShow';
+import { client } from '@/lib/sanity.client';
+import {
+  Service,
+  SpecialOffer,
+  PriceListItem,
+  PageHeaders,
+} from '@/types/schema';
+import AllServices from '@/components/sections/services/AllServices';
 import SpecialOffers from '@/components/sections/services/SpecialOffers';
 import PriceList from '@/components/sections/services/PriceList';
 import PageHeaderComponent from '@/components/sections/services/PageHeader';
 
-export const revalidate = 60
+export const revalidate = 60;
 
 async function getServices() {
   return client.fetch<Service[]>(`
@@ -27,7 +31,7 @@ async function getServices() {
       },
       order
     }
-  `)
+  `);
 }
 
 async function getSpecialOffers() {
@@ -46,7 +50,7 @@ async function getSpecialOffers() {
       features,
       order
     }
-  `)
+  `);
 }
 
 async function getPriceList() {
@@ -59,7 +63,7 @@ async function getPriceList() {
       type,
       order
     }
-  `)
+  `);
 }
 
 async function getPageHeader() {
@@ -67,7 +71,7 @@ async function getPageHeader() {
     *[_type == "pageHeaders"][0] {
       servicesHeader
     }
-  `)
+  `);
 }
 
 export default async function ServicesPage() {
@@ -76,20 +80,17 @@ export default async function ServicesPage() {
     getSpecialOffers(),
     getPriceList(),
     getPageHeader(),
-  ])
+  ]);
 
-  const fireServices = services.filter(service => service.type === 'fire')
-  const pyroServices = services.filter(service => service.type === 'pyro')
-  const firePrices = priceList.filter(item => item.type === 'fire')
-  const pyroPrices = priceList.filter(item => item.type === 'pyro')
+  // Объединяем все услуги в один список без разделения на категории
+  const allPrices = priceList;
 
   return (
     <main className="min-h-screen bg-black pt-20">
       <PageHeaderComponent data={header.servicesHeader} />
-      <FireShow services={fireServices} prices={firePrices} />
-      <PyroShow services={pyroServices} prices={pyroPrices} />
+      <AllServices services={services} prices={allPrices} />
       <SpecialOffers offers={specialOffers} />
-      <PriceList fireItems={firePrices} pyroItems={pyroPrices} />
+      <PriceList fireItems={[]} pyroItems={allPrices} />
     </main>
-  )
+  );
 }

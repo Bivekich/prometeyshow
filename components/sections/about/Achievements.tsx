@@ -6,10 +6,10 @@ import { Trophy, Award, Star, Users } from 'lucide-react';
 import { Achievement, AboutStats } from '@/types/schema';
 
 const iconMap = {
-  'Trophy': Trophy,
-  'Award': Award,
-  'Star': Star,
-  'Users': Users,
+  Trophy: Trophy,
+  Award: Award,
+  Star: Star,
+  Users: Users,
 } as const;
 
 interface AchievementsProps {
@@ -47,7 +47,9 @@ const Achievements = ({ achievements, stats }: AchievementsProps) => {
                 <motion.div
                   key={achievement.title}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  animate={
+                    inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                  }
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="bg-gray-900/50 p-6 rounded-lg border border-gray-800 hover:border-red-500/50 transition-all duration-300"
                 >
@@ -74,15 +76,21 @@ const Achievements = ({ achievements, stats }: AchievementsProps) => {
             className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
           >
             <div>
-              <p className="text-4xl font-bold text-red-500 mb-2">{stats.clientCount}</p>
+              <p className="text-4xl font-bold text-red-500 mb-2">
+                {stats.clientCount}
+              </p>
               <p className="text-gray-400">Довольных клиентов</p>
             </div>
             <div>
-              <p className="text-4xl font-bold text-red-500 mb-2">{stats.citiesCount}</p>
+              <p className="text-4xl font-bold text-red-500 mb-2">
+                {stats.citiesCount}
+              </p>
               <p className="text-gray-400">Городов России</p>
             </div>
             <div>
-              <p className="text-4xl font-bold text-red-500 mb-2">{stats.yearsExperience}</p>
+              <p className="text-4xl font-bold text-red-500 mb-2">
+                {stats.yearsExperience}
+              </p>
               <p className="text-gray-400">Лет опыта</p>
             </div>
           </motion.div>
@@ -93,3 +101,7 @@ const Achievements = ({ achievements, stats }: AchievementsProps) => {
 };
 
 export default Achievements;
+
+{
+  /* Специальные предложения временно скрыты */
+}

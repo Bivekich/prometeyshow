@@ -11,6 +11,15 @@ import { Contact } from '@/types/schema';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
+const navigationItems = [
+  { label: 'Главная', href: '/' },
+  { label: 'О нас', href: '/about' },
+  { label: 'Услуги', href: '/services' },
+  { label: 'Галерея', href: '/gallery' },
+  // { label: 'Блог', href: '/blog' },
+  { label: 'Контакты', href: '/contacts' },
+];
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://prometey.ru'),
   title: {

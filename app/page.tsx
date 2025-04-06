@@ -1,13 +1,18 @@
-import { client } from '@/lib/sanity.client'
-import { VideoBanner, CompanyIntro, HomeStats, UpcomingEvent, MainPageService, MainPageSections } from '@/types/schema'
-import VideoBannerSection from '@/components/sections/VideoBanner'
-import CompanyIntroSection from '@/components/sections/CompanyIntro'
-import ServicesSection from '@/components/sections/Services'
-import StatisticsSection from '@/components/sections/Statistics'
-import UpcomingEventsSection from '@/components/sections/UpcomingEvents'
-import ContactForm from '@/components/sections/ContactForm'
+import { client } from '@/lib/sanity.client';
+import {
+  VideoBanner,
+  CompanyIntro,
+  HomeStats,
+  MainPageService,
+  MainPageSections,
+} from '@/types/schema';
+import VideoBannerSection from '@/components/sections/VideoBanner';
+import CompanyIntroSection from '@/components/sections/CompanyIntro';
+import ServicesSection from '@/components/sections/Services';
+import StatisticsSection from '@/components/sections/Statistics';
+import ContactForm from '@/components/sections/ContactForm';
 
-export const revalidate = 60
+export const revalidate = 60;
 
 async function getVideoBanner() {
   return client.fetch<VideoBanner>(`
@@ -21,7 +26,7 @@ async function getVideoBanner() {
         }
       }
     }
-  `)
+  `);
 }
 
 async function getCompanyIntro() {
@@ -32,7 +37,7 @@ async function getCompanyIntro() {
       description,
       features
     }
-  `)
+  `);
 }
 
 async function getHomeStats() {
@@ -41,7 +46,7 @@ async function getHomeStats() {
       _type,
       stats
     }
-  `)
+  `);
 }
 
 async function getMainPageSections() {
@@ -51,23 +56,7 @@ async function getMainPageSections() {
       servicesSection,
       eventsSection
     }
-  `)
-}
-
-async function getUpcomingEvents() {
-  return client.fetch<UpcomingEvent[]>(`
-    *[_type == "upcomingEvent"] | order(order asc) {
-      _type,
-      title,
-      date,
-      time,
-      location,
-      description,
-      type,
-      typeLabel,
-      order
-    }
-  `)
+  `);
 }
 
 async function getMainPageServices() {
@@ -83,27 +72,29 @@ async function getMainPageServices() {
       },
       order
     }
-  `)
+  `);
 }
 
 export default async function Home() {
-  const [videoBanner, companyIntro, homeStats, sections, upcomingEvents, services] = await Promise.all([
-    getVideoBanner(),
-    getCompanyIntro(),
-    getHomeStats(),
-    getMainPageSections(),
-    getUpcomingEvents(),
-    getMainPageServices(),
-  ])
+  const [videoBanner, companyIntro, homeStats, sections, services] =
+    await Promise.all([
+      getVideoBanner(),
+      getCompanyIntro(),
+      getHomeStats(),
+      getMainPageSections(),
+      getMainPageServices(),
+    ]);
 
   return (
     <main className="min-h-screen">
       <VideoBannerSection data={videoBanner} />
       <CompanyIntroSection data={companyIntro} />
-      <ServicesSection services={services} sectionData={sections.servicesSection} />
+      <ServicesSection
+        services={services}
+        sectionData={sections.servicesSection}
+      />
       <StatisticsSection data={homeStats} />
-      <UpcomingEventsSection events={upcomingEvents} sectionData={sections.eventsSection} />
       <ContactForm />
     </main>
-  )
+  );
 }

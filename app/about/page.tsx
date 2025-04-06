@@ -1,13 +1,18 @@
-import { client } from '@/lib/sanity.client'
-import { Achievement, AboutStats, AboutGalleryImage, TeamMember, Review, HistoryEvent, PageHeaders } from '@/types/schema'
-import History from '@/components/sections/about/History'
-import Team from '@/components/sections/about/Team'
-import Achievements from '@/components/sections/about/Achievements'
-import Reviews from '@/components/sections/about/Reviews'
-import Gallery from '@/components/sections/about/Gallery'
-import PageHeaderComponent from '@/components/sections/about/PageHeader'
+import { client } from '@/lib/sanity.client';
+import {
+  Achievement,
+  AboutStats,
+  AboutGalleryImage,
+  PageHeaders,
+  DocumentFile,
+} from '@/types/schema';
+import Achievements from '@/components/sections/about/Achievements';
+import Reviews from '@/components/sections/about/Reviews';
+import Gallery from '@/components/sections/about/Gallery';
+import PageHeaderComponent from '@/components/sections/about/PageHeader';
+import Documents from '@/components/sections/about/Documents';
 
-export const revalidate = 60
+export const revalidate = 60;
 
 async function getAchievements() {
   return client.fetch<Achievement[]>(`
@@ -19,7 +24,7 @@ async function getAchievements() {
       icon,
       order
     }
-  `)
+  `);
 }
 
 async function getAboutStats() {
@@ -30,7 +35,7 @@ async function getAboutStats() {
       citiesCount,
       yearsExperience
     }
-  `)
+  `);
 }
 
 async function getAboutGallery() {
@@ -45,61 +50,23 @@ async function getAboutGallery() {
       alt,
       order
     }
-  `)
+  `);
 }
 
-async function getTeamMembers() {
-  return client.fetch<TeamMember[]>(`
-    *[_type == "teamMember"] | order(order asc) {
+async function getDocuments() {
+  return client.fetch<DocumentFile[]>(`
+    *[_type == "documentFile"] | order(order asc) {
       _type,
-      name,
-      role,
-      description,
-      "image": {
-        "asset": {
-          "url": image.asset->url
-        }
-      },
-      socialMedia,
-      order
-    }
-  `)
-}
-
-async function getReviews() {
-  return client.fetch<Review[]>(`
-    *[_type == "review"] | order(order asc) {
-      _type,
-      author,
-      role,
-      content,
-      rating,
-      date,
-      "avatar": {
-        "asset": {
-          "url": avatar.asset->url
-        }
-      },
-      order
-    }
-  `)
-}
-
-async function getHistoryEvents() {
-  return client.fetch<HistoryEvent[]>(`
-    *[_type == "historyEvent"] | order(order asc) {
-      _type,
-      year,
       title,
       description,
-      "image": {
+      "file": {
         "asset": {
-          "url": image.asset->url
+          "url": file.asset->url
         }
       },
       order
     }
-  `)
+  `);
 }
 
 async function getPageHeader() {
@@ -107,28 +74,25 @@ async function getPageHeader() {
     *[_type == "pageHeaders"][0] {
       aboutHeader
     }
-  `)
+  `);
 }
 
 export default async function AboutPage() {
-  const [achievements, stats, images, members, reviews, events, header] = await Promise.all([
+  const [achievements, stats, images, documents, header] = await Promise.all([
     getAchievements(),
     getAboutStats(),
     getAboutGallery(),
-    getTeamMembers(),
-    getReviews(),
-    getHistoryEvents(),
+    getDocuments(),
     getPageHeader(),
-  ])
+  ]);
 
   return (
     <main className="min-h-screen bg-black pt-20">
       <PageHeaderComponent data={header.aboutHeader} />
       <Achievements achievements={achievements} stats={stats} />
       <Gallery images={images} />
-      <Team members={members} />
-      <Reviews reviews={reviews} />
-      <History events={events} />
+      <Documents documents={documents} />
+      <Reviews vkGroupUrl="https://vk.com/topic-27989407_42510853?offset=380" />
     </main>
   );
 }

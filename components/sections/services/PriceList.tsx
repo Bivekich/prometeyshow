@@ -19,21 +19,23 @@ interface PriceListProps {
   pyroItems: PriceListItem[];
 }
 
-export default function PriceList({ fireItems = [], pyroItems = [] }: PriceListProps) {
+export default function PriceList({
+  fireItems = [],
+  pyroItems = [],
+}: PriceListProps) {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
   const { openOrderModal } = useModal();
 
+  // Объединяем все услуги в один список
+  const allItems = [...pyroItems];
+
   const sections = [
     {
-      category: 'Огненное шоу',
-      items: fireItems,
-    },
-    {
-      category: 'Пиротехническое шоу',
-      items: pyroItems,
+      category: 'Наши услуги',
+      items: allItems,
     },
   ];
 
