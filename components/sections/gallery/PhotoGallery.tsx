@@ -139,13 +139,15 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
               exit={{ scale: 0.9 }}
               className="relative max-w-4xl max-h-[80vh] w-full"
             >
-              <Image
-                src={filteredPhotos[selectedImage].image.asset.url}
-                alt={filteredPhotos[selectedImage].alt}
-                fill
-                className="object-contain"
-              />
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/50 text-white text-center">
+              <div className="relative w-full h-[calc(80vh-80px)]">
+                <Image
+                  src={filteredPhotos[selectedImage].image.asset.url}
+                  alt={filteredPhotos[selectedImage].alt}
+                  fill
+                  className="object-contain z-10"
+                />
+              </div>
+              <div className="mt-2 p-4 bg-black/50 text-white text-center">
                 <p className="font-medium mb-1">
                   {filteredPhotos[selectedImage].alt}
                 </p>

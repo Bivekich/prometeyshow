@@ -63,7 +63,33 @@ export default function PriceList({
                   {section.category}
                 </h3>
                 <div className="rounded-lg overflow-hidden">
-                  <Table>
+                  <div className="md:hidden">
+                    {section.items && section.items.length > 0 ? (
+                      section.items.map((item) => (
+                        <div
+                          key={item.title}
+                          className="bg-gray-900 p-4 mb-4 rounded-lg border-l-4 border-red-600"
+                        >
+                          <h4 className="font-medium text-white mb-2">
+                            {item.title}
+                          </h4>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-400">
+                              Длительность: {item.duration}
+                            </span>
+                            <span className="text-red-500 font-medium">
+                              {item.price}
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center text-gray-400 p-4">
+                        Нет доступных предложений в данной категории
+                      </div>
+                    )}
+                  </div>
+                  <Table className="hidden md:table">
                     <TableHeader>
                       <TableRow className="bg-gray-900 border-b border-gray-800">
                         <TableHead className="text-white">Программа</TableHead>
