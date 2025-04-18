@@ -1,4 +1,4 @@
-import { client } from '@/lib/sanity.client';
+import { client } from '@/lib/sanity';
 import { GalleryPhoto, GalleryVideo, PageHeaders } from '@/types/schema';
 import PhotoGallery from '@/components/sections/gallery/PhotoGallery';
 import VideoGallery from '@/components/sections/gallery/VideoGallery';

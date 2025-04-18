@@ -2,7 +2,7 @@ import ContactForm from '@/components/sections/contacts/ContactForm';
 import WorkingCities from '@/components/sections/contacts/WorkingCities';
 import ContactInfo from '@/components/sections/contacts/ContactInfo';
 import FAQ from '@/components/sections/contacts/FAQ';
-import { client } from '@/lib/sanity.client'
+import { client } from '@/lib/sanity'
 import PageHeader from '@/components/sections/contacts/PageHeader';
 import { Contact, WorkingCity, FAQ as FAQType, PageHeaders } from '@/types/schema';
 

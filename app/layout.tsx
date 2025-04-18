@@ -6,7 +6,7 @@ import Footer from '@/components/layout/Footer';
 import { ModalProvider } from '@/contexts/ModalContext';
 import OrderModal from '@/components/modals/OrderModal';
 import { Toaster } from '@/components/ui/toaster';
-import { client } from '@/lib/sanity.client';
+import { client } from '@/lib/sanity';
 import { Contact } from '@/types/schema';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });

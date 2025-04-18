@@ -1,4 +1,4 @@
-import { client } from '@/lib/sanity.client'
+import { client } from '@/lib/sanity'
 import { BlogPost } from '@/types/schema'
 import { PortableText } from '@portabletext/react'
 import Image from 'next/image'

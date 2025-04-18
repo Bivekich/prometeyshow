@@ -1,4 +1,4 @@
-import { client } from '@/lib/sanity.client'
+import { client } from '@/lib/sanity'
 import { BlogPost, BlogCategory } from '@/types/schema'
 import BlogPosts from '@/components/sections/blog/BlogPosts'
 import Categories from '@/components/sections/blog/Categories'
