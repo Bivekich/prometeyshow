@@ -1,4 +1,4 @@
-import { client } from '@/lib/sanity';
+import { cachedClient } from '@/lib/sanity';
 import {
   VideoBanner,
   CompanyIntro,
@@ -15,7 +15,7 @@ import ContactForm from '@/components/sections/ContactForm';
 export const revalidate = 60;
 
 async function getVideoBanner() {
-  return client.fetch<VideoBanner>(`
+  return cachedClient.fetch<VideoBanner>(`
     *[_type == "videoBanner"][0] {
       _type,
       title,
@@ -30,7 +30,7 @@ async function getVideoBanner() {
 }
 
 async function getCompanyIntro() {
-  return client.fetch<CompanyIntro>(`
+  return cachedClient.fetch<CompanyIntro>(`
     *[_type == "companyIntro"][0] {
       _type,
       title,
@@ -41,7 +41,7 @@ async function getCompanyIntro() {
 }
 
 async function getHomeStats() {
-  return client.fetch<HomeStats>(`
+  return cachedClient.fetch<HomeStats>(`
     *[_type == "homeStats"][0] {
       _type,
       stats
@@ -50,7 +50,7 @@ async function getHomeStats() {
 }
 
 async function getMainPageSections() {
-  return client.fetch<MainPageSections>(`
+  return cachedClient.fetch<MainPageSections>(`
     *[_type == "mainPageSections"][0] {
       _type,
       servicesSection,
@@ -60,7 +60,7 @@ async function getMainPageSections() {
 }
 
 async function getMainPageServices() {
-  return client.fetch<MainPageService[]>(`
+  return cachedClient.fetch<MainPageService[]>(`
     *[_type == "mainPageService"] | order(order asc) {
       _type,
       title,
