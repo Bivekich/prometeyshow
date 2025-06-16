@@ -9,6 +9,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BlogPost } from '@/types/schema';
 import { formatDate } from '@/lib/utils';
+import { urlFor } from '@/lib/sanity';
 
 interface BlogPostsProps {
   posts: BlogPost[]
@@ -34,7 +35,7 @@ const BlogPosts = ({ posts }: BlogPostsProps) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="relative aspect-[16/9] md:aspect-square rounded-t-lg md:rounded-l-lg md:rounded-t-none overflow-hidden">
                 <Image
-                  src={post.mainImage.asset.url}
+                  src={urlFor(post.mainImage).url()}
                   alt={post.title}
                   fill
                   className="object-cover transition group-hover:scale-105"

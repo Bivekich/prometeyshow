@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { X, Play } from 'lucide-react';
 import Image from 'next/image';
 import { GalleryVideo } from '@/types/schema';
+import { urlFor } from '@/lib/sanity';
 
 interface VideoGalleryProps {
   videos: GalleryVideo[];
@@ -52,7 +53,7 @@ const VideoGallery = ({ videos }: VideoGalleryProps) => {
                 onClick={() => setSelectedVideo(index)}
               >
                 <Image
-                  src={video.thumbnail.asset.url}
+                  src={urlFor(video.thumbnail).url()}
                   alt={video.title}
                   fill
                   className="object-cover rounded-lg"

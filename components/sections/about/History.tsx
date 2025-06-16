@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import Image from 'next/image';
 import { HistoryEvent } from '@/types/schema';
+import { urlFor } from '@/lib/sanity';
 
 interface HistoryProps {
   events: HistoryEvent[];
@@ -55,16 +56,16 @@ const History = ({ events }: HistoryProps) => {
                 {/* Content */}
                 <div className="ml-16 bg-gray-900/50 p-6 rounded-lg border border-gray-800 hover:border-red-500/50 transition-all duration-300 w-full">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className={event.image?.asset?.url ? "" : "md:col-span-2"}>
+                    <div className={event.image ? "" : "md:col-span-2"}>
                       <h3 className="text-xl font-bold text-white mb-2">
                         {event.title}
                       </h3>
                       <p className="text-gray-400">{event.description}</p>
                     </div>
-                    {event.image?.asset?.url && (
+                    {event.image && (
                       <div className="relative aspect-video rounded-lg overflow-hidden">
                         <Image
-                          src={event.image.asset.url}
+                          src={urlFor(event.image).url()}
                           alt={event.title}
                           fill
                           className="object-cover"

@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BlogPost } from '@/types/schema';
 import { formatDate } from '@/lib/utils';
+import { urlFor } from '@/lib/sanity';
 
 interface FeaturedPostProps {
   post: BlogPost;
@@ -31,7 +32,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="relative aspect-[16/9] lg:aspect-square rounded-lg overflow-hidden">
               <Image
-                src={post.mainImage.asset.url}
+                src={urlFor(post.mainImage).url()}
                 alt={post.title}
                 fill
                 className="object-cover"

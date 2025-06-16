@@ -7,7 +7,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['prometey.ru', 'prometeyshow.ru'],
+    domains: ['prometey.ru', 'prometeyshow.ru', 'cdn.sanity.io'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -24,7 +24,6 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
-  swcMinify: true,
   output: 'standalone',
   experimental: {
     serverActions: {

@@ -1,4 +1,4 @@
-import { client } from '@/lib/sanity'
+import { cachedClient, urlFor } from '@/lib/sanity'
 import { BlogPost } from '@/types/schema'
 import { PortableText } from '@portabletext/react'
 import Image from 'next/image'
@@ -14,7 +14,7 @@ interface Props {
 }
 
 async function getBlogPost(slug: string) {
-  return client.fetch<BlogPost>(`
+  return cachedClient.fetch<BlogPost>(`
     *[_type == "blogPost" && slug.current == $slug][0] {
       _id,
       title,
@@ -57,7 +57,7 @@ export default async function BlogPostPage({ params }: Props) {
       <div className="relative h-[60vh] min-h-[400px] w-full">
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/50 to-transparent" />
         <Image
-          src={post.mainImage.asset.url}
+          src={urlFor(post.mainImage).url()}
           alt={post.title}
           fill
           className="object-cover"

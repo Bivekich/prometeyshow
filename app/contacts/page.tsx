@@ -2,14 +2,14 @@ import ContactForm from '@/components/sections/contacts/ContactForm';
 import WorkingCities from '@/components/sections/contacts/WorkingCities';
 import ContactInfo from '@/components/sections/contacts/ContactInfo';
 import FAQ from '@/components/sections/contacts/FAQ';
-import { client } from '@/lib/sanity'
+import { cachedClient } from '@/lib/sanity'
 import PageHeader from '@/components/sections/contacts/PageHeader';
 import { Contact, WorkingCity, FAQ as FAQType, PageHeaders } from '@/types/schema';
 
 export const revalidate = 60;
 
 async function getContactInfo() {
-  return client.fetch<Contact>(`
+  return cachedClient.fetch<Contact>(`
     *[_type == "contact"][0] {
       title,
       email,
@@ -25,7 +25,7 @@ async function getContactInfo() {
 }
 
 async function getWorkingCities() {
-  return client.fetch<WorkingCity[]>(`
+  return cachedClient.fetch<WorkingCity[]>(`
     *[_type == "workingCity"] | order(order asc) {
       _type,
       name,
@@ -38,7 +38,7 @@ async function getWorkingCities() {
 }
 
 async function getFAQs() {
-  return client.fetch<FAQType[]>(`
+  return cachedClient.fetch<FAQType[]>(`
     *[_type == "faq"] | order(order asc) {
       _type,
       question,
@@ -50,7 +50,7 @@ async function getFAQs() {
 }
 
 async function getPageHeader() {
-  return client.fetch<PageHeaders>(`
+  return cachedClient.fetch<PageHeaders>(`
     *[_type == "pageHeaders"][0] {
       contactsHeader
     }

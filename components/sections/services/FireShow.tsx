@@ -7,6 +7,7 @@ import { Service, PriceListItem } from '@/types/schema';
 import { Flame, Clock, Users, Sparkles, Star, Target, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
+import { urlFor } from '@/lib/sanity';
 
 interface FireShowProps {
   services: Service[];
@@ -45,11 +46,11 @@ const ImageSlider = ({ images }: ImageSliderProps) => {
     <>
       <div className="relative aspect-video rounded-lg overflow-hidden mt-6">
         <Image
-          src={images[currentImageIndex].asset.url}
+          src={urlFor(images[currentImageIndex]).url()}
           alt="Огненное шоу"
           fill
           className="object-cover cursor-pointer"
-          onClick={() => setSelectedImage(images[currentImageIndex].asset.url)}
+          onClick={() => setSelectedImage(urlFor(images[currentImageIndex]).url())}
         />
         {images.length > 1 && (
           <>

@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { X } from 'lucide-react';
 import { AboutGalleryImage } from '@/types/schema';
 import Image from 'next/image';
+import { urlFor } from '@/lib/sanity';
 
 interface GalleryProps {
   images: AboutGalleryImage[];
@@ -49,7 +50,7 @@ const Gallery = ({ images }: GalleryProps) => {
                 <div className="aspect-square overflow-hidden rounded-lg relative">
                   <div className="absolute inset-0 transition-transform duration-300 group-hover:scale-105">
                     <Image
-                      src={image.image.asset.url}
+                      src={urlFor(image.image).url()}
                       alt={image.alt}
                       fill
                       className="object-cover"
@@ -87,10 +88,10 @@ const Gallery = ({ images }: GalleryProps) => {
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
               className="relative max-w-4xl max-h-[80vh] w-full"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
             >
-              <Image
-                src={images[selectedImage].image.asset.url}
+                              <Image
+                src={urlFor(images[selectedImage].image).url()}
                 alt={images[selectedImage].alt}
                 fill
                 className="object-contain"

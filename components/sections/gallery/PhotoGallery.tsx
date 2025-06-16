@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { GalleryPhoto } from '@/types/schema';
+import { urlFor } from '@/lib/sanity';
 
 const categories = ['Все', 'Городские мероприятия', 'Свадьбы', 'Пиротехника'];
 
@@ -84,7 +85,7 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
                 onClick={() => setSelectedImage(index)}
               >
                 <Image
-                  src={photo.image.asset.url}
+                  src={urlFor(photo.image).url()}
                   alt={photo.alt}
                   fill
                   className="object-cover rounded-lg"
@@ -141,7 +142,7 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
             >
               <div className="relative w-full h-[calc(80vh-80px)]">
                 <Image
-                  src={filteredPhotos[selectedImage].image.asset.url}
+                  src={urlFor(filteredPhotos[selectedImage].image).url()}
                   alt={filteredPhotos[selectedImage].alt}
                   fill
                   className="object-contain z-10"

@@ -1,4 +1,4 @@
-import { client } from '@/lib/sanity';
+import { cachedClient } from '@/lib/sanity';
 import {
   Service,
   SpecialOffer,
@@ -13,7 +13,7 @@ import PageHeaderComponent from '@/components/sections/services/PageHeader';
 export const revalidate = 60;
 
 async function getServices() {
-  return client.fetch<Service[]>(`
+  return cachedClient.fetch<Service[]>(`
     *[_type == "service"] | order(order asc) {
       _type,
       title,
@@ -35,7 +35,7 @@ async function getServices() {
 }
 
 async function getSpecialOffers() {
-  return client.fetch<SpecialOffer[]>(`
+  return cachedClient.fetch<SpecialOffer[]>(`
     *[_type == "specialOffer"] | order(order asc) {
       _type,
       title,
@@ -54,7 +54,7 @@ async function getSpecialOffers() {
 }
 
 async function getPriceList() {
-  return client.fetch<PriceListItem[]>(`
+  return cachedClient.fetch<PriceListItem[]>(`
     *[_type == "priceListItem"] | order(order asc) {
       _type,
       title,
@@ -67,7 +67,7 @@ async function getPriceList() {
 }
 
 async function getPageHeader() {
-  return client.fetch<PageHeaders>(`
+  return cachedClient.fetch<PageHeaders>(`
     *[_type == "pageHeaders"][0] {
       servicesHeader
     }

@@ -7,7 +7,7 @@ import Footer from '@/components/layout/Footer';
 import { ModalProvider } from '@/contexts/ModalContext';
 import OrderModal from '@/components/modals/OrderModal';
 import { Toaster } from '@/components/ui/toaster';
-import { client } from '@/lib/sanity';
+import { cachedClient } from '@/lib/sanity';
 import { Contact } from '@/types/schema';
 
 // Оптимизация шрифтов
@@ -80,7 +80,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 async function getContact() {
-  return client.fetch<Contact>(`
+  return cachedClient.fetch<Contact>(`
     *[_type == "contact"][0] {
       _type,
       title,

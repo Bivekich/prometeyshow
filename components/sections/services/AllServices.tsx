@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
+import { urlFor } from '@/lib/sanity';
 
 interface AllServicesProps {
   services: Service[];
@@ -50,11 +51,11 @@ const ImageSlider = ({ images }: ImageSliderProps) => {
     <>
       <div className="relative aspect-video rounded-lg overflow-hidden mt-6">
         <Image
-          src={images[currentImageIndex].asset.url}
+          src={urlFor(images[currentImageIndex]).url()}
           alt="Шоу"
           fill
           className="object-cover cursor-pointer"
-          onClick={() => setSelectedImage(images[currentImageIndex].asset.url)}
+          onClick={() => setSelectedImage(urlFor(images[currentImageIndex]).url())}
         />
         {images.length > 1 && (
           <>

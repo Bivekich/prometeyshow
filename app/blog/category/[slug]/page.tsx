@@ -1,4 +1,4 @@
-import { client } from '@/lib/sanity'
+import { cachedClient } from '@/lib/sanity'
 import { BlogPost, BlogCategory } from '@/types/schema'
 import BlogPosts from '@/components/sections/blog/BlogPosts'
 import Categories from '@/components/sections/blog/Categories'
@@ -13,7 +13,7 @@ interface Props {
 
 async function getBlogPostsByCategory(slug: string) {
   if (slug === 'all') {
-    return client.fetch<BlogPost[]>(`
+    return cachedClient.fetch<BlogPost[]>(`
       *[_type == "blogPost"] | order(publishedAt desc) {
         _id,
         title,
@@ -36,7 +36,7 @@ async function getBlogPostsByCategory(slug: string) {
     `)
   }
 
-  return client.fetch<BlogPost[]>(`
+  return cachedClient.fetch<BlogPost[]>(`
     *[_type == "blogPost" && category->slug.current == $slug] | order(publishedAt desc) {
       _id,
       title,
@@ -60,7 +60,7 @@ async function getBlogPostsByCategory(slug: string) {
 }
 
 async function getCategories() {
-  const categories = await client.fetch<BlogCategory[]>(`
+  const categories = await cachedClient.fetch<BlogCategory[]>(`
     *[_type == "blogCategory"] | order(order asc) {
       _type,
       name,
@@ -71,7 +71,7 @@ async function getCategories() {
   `)
 
   // Add "All Posts" category at the beginning
-  const allPostsCount = await client.fetch<number>('count(*[_type == "blogPost"])')
+  const allPostsCount = await cachedClient.fetch<number>('count(*[_type == "blogPost"])')
   return [
     {
       _type: 'blogCategory' as const,

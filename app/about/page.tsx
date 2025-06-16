@@ -1,4 +1,4 @@
-import { client } from '@/lib/sanity';
+import { cachedClient } from '@/lib/sanity';
 import {
   Achievement,
   AboutStats,
@@ -15,7 +15,7 @@ import Documents from '@/components/sections/about/Documents';
 export const revalidate = 60;
 
 async function getAchievements() {
-  return client.fetch<Achievement[]>(`
+  return cachedClient.fetch<Achievement[]>(`
     *[_type == "achievement"] | order(order asc) {
       _type,
       title,
@@ -28,7 +28,7 @@ async function getAchievements() {
 }
 
 async function getAboutStats() {
-  return client.fetch<AboutStats>(`
+  return cachedClient.fetch<AboutStats>(`
     *[_type == "aboutStats"][0] {
       _type,
       clientCount,
@@ -39,7 +39,7 @@ async function getAboutStats() {
 }
 
 async function getAboutGallery() {
-  return client.fetch<AboutGalleryImage[]>(`
+  return cachedClient.fetch<AboutGalleryImage[]>(`
     *[_type == "aboutGallery"] | order(order asc) {
       _type,
       "image": {
@@ -54,7 +54,7 @@ async function getAboutGallery() {
 }
 
 async function getDocuments() {
-  return client.fetch<DocumentFile[]>(`
+  return cachedClient.fetch<DocumentFile[]>(`
     *[_type == "documentFile"] | order(order asc) {
       _type,
       title,
@@ -70,7 +70,7 @@ async function getDocuments() {
 }
 
 async function getPageHeader() {
-  return client.fetch<PageHeaders>(`
+  return cachedClient.fetch<PageHeaders>(`
     *[_type == "pageHeaders"][0] {
       aboutHeader
     }

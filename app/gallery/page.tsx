@@ -1,4 +1,4 @@
-import { client } from '@/lib/sanity';
+import { cachedClient } from '@/lib/sanity';
 import { GalleryPhoto, GalleryVideo, PageHeaders } from '@/types/schema';
 import PhotoGallery from '@/components/sections/gallery/PhotoGallery';
 import VideoGallery from '@/components/sections/gallery/VideoGallery';
@@ -7,7 +7,7 @@ import PageHeaderComponent from '@/components/sections/gallery/PageHeader';
 export const revalidate = 60;
 
 async function getGalleryPhotos() {
-  return client.fetch<GalleryPhoto[]>(`
+  return cachedClient.fetch<GalleryPhoto[]>(`
     *[_type == "galleryPhoto"] | order(order asc) {
       _type,
       "image": {
@@ -23,7 +23,7 @@ async function getGalleryPhotos() {
 }
 
 async function getGalleryVideos() {
-  return client.fetch<GalleryVideo[]>(`
+  return cachedClient.fetch<GalleryVideo[]>(`
     *[_type == "galleryVideo"] | order(order asc) {
       _type,
       title,
@@ -43,7 +43,7 @@ async function getGalleryVideos() {
 }
 
 async function getPageHeader() {
-  return client.fetch<PageHeaders>(`
+  return cachedClient.fetch<PageHeaders>(`
     *[_type == "pageHeaders"][0] {
       galleryHeader
     }

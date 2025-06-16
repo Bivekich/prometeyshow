@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card';
 import Image from 'next/image';
 import { MainPageService } from '@/types/schema';
+import { urlFor } from '@/lib/sanity';
 
 interface ServicesProps {
   services: MainPageService[];
@@ -53,7 +54,7 @@ const Services = ({ services, sectionData }: ServicesProps) => {
                   <CardHeader>
                     <div className="relative h-48 w-full mb-4 overflow-hidden rounded-t-lg">
                       <Image
-                        src={service.image.asset.url}
+                        src={urlFor(service.image).url()}
                         alt={service.title}
                         fill
                         className="object-cover w-full h-full transform hover:scale-110 transition-transform duration-300"
