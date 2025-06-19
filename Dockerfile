@@ -25,11 +25,18 @@ RUN npm run build
 FROM node:18-alpine AS runner
 WORKDIR /app
 
+# Add curl for healthcheck
+RUN apk add --no-cache curl
+
 # Copy production files
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/lib ./lib
+
+# Проверяем, что изображения скопированы
+RUN ls -la /app/public/images/ || echo "Images directory not found!"
 
 # Runtime environment
 ENV NODE_ENV=production
