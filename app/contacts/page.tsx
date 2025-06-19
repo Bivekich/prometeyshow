@@ -67,7 +67,7 @@ export default async function ContactsPage() {
 
   return (
     <main className="min-h-screen bg-black pt-20">
-      <PageHeader data={header.contactsHeader} />
+      <PageHeader data={header?.contactsHeader} />
       <ContactInfo contact={contactInfo} />
       <WorkingCities cities={workingCities} />
       <ContactForm />

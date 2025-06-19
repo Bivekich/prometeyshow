@@ -4,10 +4,16 @@ import { motion } from 'framer-motion';
 import { PageHeader as PageHeaderType } from '@/types/schema';
 
 interface PageHeaderProps {
-  data: PageHeaderType;
+  data?: PageHeaderType;
 }
 
 export default function PageHeader({ data }: PageHeaderProps) {
+  // Fallback данные на случай если data не передан
+  const headerData = data || {
+    title: 'Галерея',
+    description: 'Фото и видео наших лучших выступлений'
+  };
+
   return (
     <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
       <div className="container mx-auto px-4">
@@ -18,10 +24,10 @@ export default function PageHeader({ data }: PageHeaderProps) {
           className="text-center"
         >
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            {data.title}
+            {headerData.title}
           </h1>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            {data.description}
+            {headerData.description}
           </p>
         </motion.div>
       </div>

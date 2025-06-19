@@ -59,7 +59,7 @@ export default async function GalleryPage() {
 
   return (
     <main className="min-h-screen bg-black pt-20">
-      <PageHeaderComponent data={header.galleryHeader} />
+      <PageHeaderComponent data={header?.galleryHeader} />
       <VideoGallery videos={videos} />
       <PhotoGallery photos={photos} />
     </main>
