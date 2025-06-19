@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "optimize-images": "node scripts/optimize-images.js",
-    "build:optimized": "npm run optimize-images && NEXT_OPTIMIZE_FONTS=true NEXT_OPTIMIZE_IMAGES=true NEXT_OPTIMIZE_CSS=true next build"
+    "build:optimized": "npm run optimize-images && NEXT_OPTIMIZE_FONTS=true NEXT_OPTIMIZE_IMAGES=true NEXT_OPTIMIZE_CSS=true next build",
+    "check-images": "node scripts/check-images.js",
+    "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",

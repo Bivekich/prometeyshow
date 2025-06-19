@@ -9,8 +9,25 @@ services:
         NEXT_PUBLIC_SANITY_PROJECT_ID: ${NEXT_PUBLIC_SANITY_PROJECT_ID}
         NEXT_PUBLIC_SANITY_DATASET: ${NEXT_PUBLIC_SANITY_DATASET}
         NEXT_PUBLIC_SANITY_API_VERSION: ${NEXT_PUBLIC_SANITY_API_VERSION}
+    environment:
+      # Production настройки
+      - NODE_ENV=production
+      - DISABLE_SANITY=true
+      - NEXT_PUBLIC_USE_FALLBACK_IMAGES=true
+      # Telegram API (если нужен)
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
     env_file:
       - stack.env
     ports:
       - '3003:3000'
+    volumes:
+      # Монтируем папку с изображениями для обеспечения их доступности
+      - ./public/images:/app/public/images:ro
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/images/fire-show.jpg"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

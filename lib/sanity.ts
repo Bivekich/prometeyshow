@@ -3,7 +3,19 @@ import imageUrlBuilder from '@sanity/image-url';
 import { SanityImageSource } from '@sanity/image-url/lib/types/types';
 
 // Проверяем, отключен ли Sanity в режиме разработки
-const isSanityDisabled = process.env.DISABLE_SANITY === 'true';
+const isSanityDisabled = process.env.DISABLE_SANITY === 'true' || process.env.NODE_ENV === 'production';
+
+// Debug только в development режиме
+const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG === 'true';
+
+if (isDebug) {
+  console.log('🔍 DEBUG INFO:');
+  console.log('NODE_ENV:', process.env.NODE_ENV);
+  console.log('DISABLE_SANITY:', process.env.DISABLE_SANITY);
+  console.log('NEXT_PUBLIC_SANITY_PROJECT_ID:', process.env.NEXT_PUBLIC_SANITY_PROJECT_ID);
+  console.log('Is Server:', typeof window === 'undefined');
+  console.log('🎯 isSanityDisabled:', isSanityDisabled);
+}
 
 // Fallback значения для разработки
 export const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || '54z0ld0n';
@@ -26,7 +38,11 @@ const fallbackImages = {
 // Функция для получения случайного fallback изображения
 function getRandomFallbackImage(): string {
   const images = Object.values(fallbackImages);
-  return images[Math.floor(Math.random() * images.length)];
+  const selectedImage = images[Math.floor(Math.random() * images.length)];
+  if (isDebug) {
+    console.log('🖼️ Selected fallback image:', selectedImage);
+  }
+  return selectedImage;
 }
 
 // Mock данные для разработки
@@ -601,9 +617,17 @@ export const client = createClient({
 // Обертка клиента с кэшированием запросов
 export const cachedClient = {
   fetch: async <T>(query: string, params?: any): Promise<T> => {
-    // Если Sanity отключен, возвращаем mock данные
-    if (isSanityDisabled) {
-      console.log('Sanity disabled, returning mock data for query:', query);
+    if (isDebug) {
+      console.log('🔍 cachedClient.fetch called with query:', query.substring(0, 50) + '...');
+      console.log('🔍 isSanityDisabled:', isSanityDisabled);
+      console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
+    }
+    
+    // В production всегда используем mock данные
+    if (isSanityDisabled || process.env.NODE_ENV === 'production') {
+      if (isDebug) {
+        console.log('🎯 Using mock data for query:', query.substring(0, 50) + '...');
+      }
       
       // Определяем тип запроса и возвращаем соответствующие данные
       if (query.includes('contact')) {
@@ -686,16 +710,24 @@ export const cachedClient = {
     const cacheKey = JSON.stringify({ query, params });
     
     if (cache.has(cacheKey)) {
+      if (isDebug) {
+        console.log('📦 Returning cached data');
+      }
       return cache.get(cacheKey);
     }
     
     try {
+      if (isDebug) {
+        console.log('🌐 Fetching from Sanity...');
+      }
       const result = await client.fetch<T>(query, params);
       cache.set(cacheKey, result);
       return result;
     } catch (error) {
       console.warn('Sanity fetch error:', error);
-      console.log('Returning mock data instead');
+      if (isDebug) {
+        console.log('🔄 Falling back to mock data due to error');
+      }
       
       // В случае ошибки также возвращаем соответствующие mock данные
       if (query.includes('contact')) {
@@ -781,10 +813,19 @@ export const cachedClient = {
 const builder = imageUrlBuilder(client);
 
 export function urlFor(source: SanityImageSource) {
+  if (isDebug) {
+    console.log('📸 urlFor called with source:', source);
+    console.log('📸 isSanityDisabled:', isSanityDisabled);
+  }
+  
   try {
-    if (isSanityDisabled || !source) {
+    // В production всегда используем fallback изображения
+    if (isSanityDisabled || !source || process.env.NODE_ENV === 'production') {
       // Возвращаем случайное реальное изображение вместо placeholder
       const fallbackUrl = getRandomFallbackImage();
+      if (isDebug) {
+        console.log('📸 Using fallback image:', fallbackUrl);
+      }
       return {
         url: () => fallbackUrl,
         width: (width: number) => ({ url: () => fallbackUrl }),
@@ -795,14 +836,22 @@ export function urlFor(source: SanityImageSource) {
       };
     }
     
-    // Используем стандартный builder от Sanity
+    // Используем стандартный builder от Sanity только в development
+    if (isDebug) {
+      console.log('📸 Using Sanity image builder');
+    }
     return builder.image(source)
       .auto('format')
       .quality(80); // Баланс между качеством и размером
   } catch (error) {
-    console.warn('Image URL generation error:', error);
+    if (isDebug) {
+      console.warn('Image URL generation error:', error);
+    }
     // Возвращаем случайное реальное изображение
     const fallbackUrl = getRandomFallbackImage();
+    if (isDebug) {
+      console.log('📸 Error fallback image:', fallbackUrl);
+    }
     return {
       url: () => fallbackUrl,
       width: (width: number) => ({ url: () => fallbackUrl }),
