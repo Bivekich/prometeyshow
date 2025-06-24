@@ -45,6 +45,29 @@ function getRandomFallbackImage(): string {
   return selectedImage;
 }
 
+// Функция для получения стабильного изображения по источнику
+function getStableFallbackImage(source: any): string {
+  if (!source) return fallbackImages.fire;
+  
+  // Если есть _ref, используем его для определения типа изображения
+  if (source.asset?._ref) {
+    const ref = source.asset._ref;
+    if (ref.includes('fire')) return fallbackImages.fire;
+    if (ref.includes('pyro')) return fallbackImages.pyro;
+    if (ref.includes('effect')) return fallbackImages.effects;
+    if (ref.includes('themed')) return fallbackImages.themed;
+    if (ref.includes('video')) return fallbackImages.video;
+  }
+  
+  // Если есть прямая ссылка на изображение
+  if (source.asset?.url) {
+    return source.asset.url;
+  }
+  
+  // По умолчанию возвращаем fire-show
+  return fallbackImages.fire;
+}
+
 // Mock данные для разработки
 const mockData = {
   posts: [],
@@ -821,10 +844,10 @@ export function urlFor(source: SanityImageSource) {
   try {
     // В production всегда используем fallback изображения
     if (isSanityDisabled || !source || process.env.NODE_ENV === 'production') {
-      // Возвращаем случайное реальное изображение вместо placeholder
-      const fallbackUrl = getRandomFallbackImage();
+      // Возвращаем стабильное изображение на основе источника
+      const fallbackUrl = getStableFallbackImage(source);
       if (isDebug) {
-        console.log('📸 Using fallback image:', fallbackUrl);
+        console.log('📸 Using stable fallback image:', fallbackUrl);
       }
       return {
         url: () => fallbackUrl,
@@ -847,10 +870,10 @@ export function urlFor(source: SanityImageSource) {
     if (isDebug) {
       console.warn('Image URL generation error:', error);
     }
-    // Возвращаем случайное реальное изображение
-    const fallbackUrl = getRandomFallbackImage();
+    // Возвращаем стабильное изображение на основе источника
+    const fallbackUrl = getStableFallbackImage(source);
     if (isDebug) {
-      console.log('📸 Error fallback image:', fallbackUrl);
+      console.log('📸 Error stable fallback image:', fallbackUrl);
     }
     return {
       url: () => fallbackUrl,

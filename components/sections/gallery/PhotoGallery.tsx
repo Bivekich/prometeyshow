@@ -27,15 +27,19 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
   );
 
   const handlePrevious = () => {
-    setSelectedImage((prev) =>
-      prev === 0 ? filteredPhotos.length - 1 : prev! - 1
-    );
+    if (selectedImage === null) return;
+    setSelectedImage((prev) => {
+      if (prev === null) return null;
+      return prev === 0 ? filteredPhotos.length - 1 : prev - 1;
+    });
   };
 
   const handleNext = () => {
-    setSelectedImage((prev) =>
-      prev === filteredPhotos.length - 1 ? 0 : prev! + 1
-    );
+    if (selectedImage === null) return;
+    setSelectedImage((prev) => {
+      if (prev === null) return null;
+      return prev === filteredPhotos.length - 1 ? 0 : prev + 1;
+    });
   };
 
   return (
