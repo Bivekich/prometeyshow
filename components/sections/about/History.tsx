@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import Image from 'next/image';
+import StaticImage from '@/components/ui/StaticImage';
 import { HistoryEvent } from '@/types/schema';
 import { urlFor } from '@/lib/sanity';
 
@@ -64,7 +64,7 @@ const History = ({ events }: HistoryProps) => {
                     </div>
                     {event.image && (
                       <div className="relative aspect-video rounded-lg overflow-hidden">
-                        <Image
+                        <StaticImage
                           src={urlFor(event.image).url()}
                           alt={event.title}
                           fill

@@ -6,7 +6,7 @@ import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import Image from 'next/image';
+import StaticImage from '@/components/ui/StaticImage';
 import { BlogPost } from '@/types/schema';
 import { formatDate } from '@/lib/utils';
 import { urlFor } from '@/lib/sanity';
@@ -34,7 +34,7 @@ const BlogPosts = ({ posts }: BlogPostsProps) => {
           <Card className="bg-gray-900 border-gray-800 hover:border-red-500/50 transition-colors duration-300">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="relative aspect-[16/9] md:aspect-square rounded-t-lg md:rounded-l-lg md:rounded-t-none overflow-hidden">
-                <Image
+                <StaticImage
                   src={urlFor(post.mainImage).url()}
                   alt={post.title}
                   fill

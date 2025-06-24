@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import Image from 'next/image';
+import StaticImage from '@/components/ui/StaticImage';
 import { MainPageService } from '@/types/schema';
 import { urlFor } from '@/lib/sanity';
 
@@ -53,7 +53,7 @@ const Services = ({ services, sectionData }: ServicesProps) => {
                 <Card className="bg-gray-900 border-gray-800 hover:border-red-500 transition-all duration-300">
                   <CardHeader>
                     <div className="relative h-48 w-full mb-4 overflow-hidden rounded-t-lg">
-                      <Image
+                      <StaticImage
                         src={urlFor(service.image).url()}
                         alt={service.title}
                         fill

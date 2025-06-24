@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import Image from 'next/image';
+import StaticImage from '@/components/ui/StaticImage';
 import { GalleryPhoto } from '@/types/schema';
 import { urlFor } from '@/lib/sanity';
 
@@ -84,7 +84,7 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
                 className="relative aspect-square cursor-pointer group"
                 onClick={() => setSelectedImage(index)}
               >
-                <Image
+                <StaticImage
                   src={urlFor(photo.image).url()}
                   alt={photo.alt}
                   fill
@@ -141,7 +141,7 @@ const PhotoGallery = ({ photos }: PhotoGalleryProps) => {
               className="relative max-w-4xl max-h-[80vh] w-full"
             >
               <div className="relative w-full h-[calc(80vh-80px)]">
-                <Image
+                <StaticImage
                   src={urlFor(filteredPhotos[selectedImage].image).url()}
                   alt={filteredPhotos[selectedImage].alt}
                   fill

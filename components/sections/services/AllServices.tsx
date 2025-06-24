@@ -14,7 +14,7 @@ import {
   ChevronRight,
   X,
 } from 'lucide-react';
-import Image from 'next/image';
+import StaticImage from '@/components/ui/StaticImage';
 import { useState } from 'react';
 import { urlFor } from '@/lib/sanity';
 
@@ -50,7 +50,7 @@ const ImageSlider = ({ images }: ImageSliderProps) => {
   return (
     <>
       <div className="relative aspect-video rounded-lg overflow-hidden mt-6">
-        <Image
+        <StaticImage
           src={urlFor(images[currentImageIndex]).url()}
           alt="Шоу"
           fill
@@ -96,7 +96,7 @@ const ImageSlider = ({ images }: ImageSliderProps) => {
             <X className="w-6 h-6" />
           </button>
           <div className="relative w-full h-full max-w-7xl max-h-[90vh] m-4">
-            <Image
+            <StaticImage
               src={selectedImage}
               alt="Шоу"
               fill

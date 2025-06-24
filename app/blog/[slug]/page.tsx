@@ -1,7 +1,7 @@
 import { cachedClient, urlFor } from '@/lib/sanity'
 import { BlogPost } from '@/types/schema'
 import { PortableText } from '@portabletext/react'
-import Image from 'next/image'
+import StaticImage from '@/components/ui/StaticImage';
 import { Calendar, Clock } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 
@@ -56,7 +56,7 @@ export default async function BlogPostPage({ params }: Props) {
       {/* Hero Section */}
       <div className="relative h-[60vh] min-h-[400px] w-full">
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/50 to-transparent" />
-        <Image
+        <StaticImage
           src={urlFor(post.mainImage).url()}
           alt={post.title}
           fill

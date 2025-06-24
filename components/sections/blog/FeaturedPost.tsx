@@ -5,7 +5,7 @@ import { useInView } from 'react-intersection-observer';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import Image from 'next/image';
+import StaticImage from '@/components/ui/StaticImage';
 import { BlogPost } from '@/types/schema';
 import { formatDate } from '@/lib/utils';
 import { urlFor } from '@/lib/sanity';
@@ -31,7 +31,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="relative aspect-[16/9] lg:aspect-square rounded-lg overflow-hidden">
-              <Image
+              <StaticImage
                 src={urlFor(post.mainImage).url()}
                 alt={post.title}
                 fill

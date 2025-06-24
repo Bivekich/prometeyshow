@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { FileText } from 'lucide-react';
 import { DocumentFile } from '@/types/schema';
-import Image from 'next/image';
+import StaticImage from '@/components/ui/StaticImage';
 
 interface DocumentsProps {
   documents: DocumentFile[];
@@ -43,7 +43,7 @@ export default function Documents({ documents }: DocumentsProps) {
                 className="bg-gray-900/50 rounded-lg overflow-hidden group"
               >
                 <div className="relative h-80 w-full">
-                  <Image
+                  <StaticImage
                     src={doc.file.asset.url}
                     alt={doc.title}
                     className="object-contain"

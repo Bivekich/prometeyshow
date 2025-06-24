@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { X, Play } from 'lucide-react';
-import Image from 'next/image';
+import StaticImage from '@/components/ui/StaticImage';
 import { GalleryVideo } from '@/types/schema';
 import { urlFor } from '@/lib/sanity';
 
@@ -52,7 +52,7 @@ const VideoGallery = ({ videos }: VideoGalleryProps) => {
                 className="relative aspect-video cursor-pointer group"
                 onClick={() => setSelectedVideo(index)}
               >
-                <Image
+                <StaticImage
                   src={urlFor(video.thumbnail).url()}
                   alt={video.title}
                   fill

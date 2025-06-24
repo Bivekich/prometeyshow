@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Card, CardContent } from '@/components/ui/card';
 import { TeamMember } from '@/types/schema';
-import Image from 'next/image';
+import StaticImage from '@/components/ui/StaticImage';
 import { urlFor } from '@/lib/sanity';
 
 interface TeamProps {
@@ -44,7 +44,7 @@ export default function Team({ members }: TeamProps) {
               >
                 <Card className="bg-gray-900 border-gray-800 overflow-hidden hover:border-red-500/50 transition-colors duration-300">
                   <div className="relative h-64 w-full">
-                    <Image
+                    <StaticImage
                       src={urlFor(member.image).url()}
                       alt={member.name}
                       fill

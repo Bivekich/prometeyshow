@@ -7,21 +7,19 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['prometey.ru', 'prometeyshow.ru', 'cdn.sanity.io'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'cdn.sanity.io',
-        port: '',
-        pathname: '/images/**',
-      },
-    ],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    formats: ['image/webp', 'image/avif'],
-    minimumCacheTTL: 60,
-    // Полностью отключаем оптимизацию изображений
+    // Полностью отключаем оптимизацию изображений Next.js
     unoptimized: true,
+    loader: 'custom',
+    loaderFile: './lib/imageLoader.js',
+  },
+  // Настройка статических файлов
+  async rewrites() {
+    return [
+      {
+        source: '/images/:path*',
+        destination: '/public/images/:path*',
+      },
+    ];
   },
   compress: true,
   poweredByHeader: false,

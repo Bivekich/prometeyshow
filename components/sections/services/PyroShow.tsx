@@ -5,7 +5,7 @@ import { useInView } from 'react-intersection-observer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Service, PriceListItem } from '@/types/schema';
 import { Sparkles, Target, Star, Clock, ChevronLeft, ChevronRight, X } from 'lucide-react';
-import Image from 'next/image';
+import StaticImage from '@/components/ui/StaticImage';
 import { useState } from 'react';
 import { urlFor } from '@/lib/sanity';
 
@@ -45,7 +45,7 @@ const ImageSlider = ({ images }: ImageSliderProps) => {
   return (
     <>
       <div className="relative aspect-video rounded-lg overflow-hidden mt-6">
-        <Image
+        <StaticImage
           src={urlFor(images[currentImageIndex]).url()}
           alt="Пиротехническое шоу"
           fill
@@ -91,7 +91,7 @@ const ImageSlider = ({ images }: ImageSliderProps) => {
             <X className="w-6 h-6" />
           </button>
           <div className="relative w-full h-full max-w-7xl max-h-[90vh] m-4">
-            <Image
+            <StaticImage
               src={selectedImage}
               alt="Пиротехническое шоу"
               fill
