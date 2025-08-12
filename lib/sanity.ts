@@ -2,8 +2,8 @@ import { createClient } from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
 import { SanityImageSource } from '@sanity/image-url/lib/types/types';
 
-// Проверяем, отключен ли Sanity в режиме разработки
-const isSanityDisabled = process.env.DISABLE_SANITY === 'true' || process.env.NODE_ENV === 'production';
+// Флаг для явного отключения Sanity (только по переменной окружения)
+const isSanityDisabled = process.env.DISABLE_SANITY === 'true';
 
 // Debug только в development режиме
 const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG === 'true';
@@ -646,8 +646,8 @@ export const cachedClient = {
       console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
     }
     
-    // В production всегда используем mock данные
-    if (isSanityDisabled || process.env.NODE_ENV === 'production') {
+    // Используем mock данные только когда это явно включено
+    if (isSanityDisabled) {
       if (isDebug) {
         console.log('🎯 Using mock data for query:', query.substring(0, 50) + '...');
       }
@@ -842,8 +842,8 @@ export function urlFor(source: SanityImageSource) {
   }
   
   try {
-    // В production всегда используем fallback изображения
-    if (isSanityDisabled || !source || process.env.NODE_ENV === 'production') {
+    // Возвращаем fallback изображение только если Sanity отключен или источник пустой
+    if (isSanityDisabled || !source) {
       // Возвращаем стабильное изображение на основе источника
       const fallbackUrl = getStableFallbackImage(source);
       if (isDebug) {
@@ -859,7 +859,7 @@ export function urlFor(source: SanityImageSource) {
       };
     }
     
-    // Используем стандартный builder от Sanity только в development
+    // Используем стандартный builder от Sanity
     if (isDebug) {
       console.log('📸 Using Sanity image builder');
     }

@@ -43,12 +43,19 @@ export default function Documents({ documents }: DocumentsProps) {
                 className="bg-gray-900/50 rounded-lg overflow-hidden group"
               >
                 <div className="relative h-80 w-full">
-                  <StaticImage
-                    src={doc.file.asset.url}
-                    alt={doc.title}
-                    className="object-contain"
-                    fill
-                  />
+                  {(() => {
+                    const url = doc.file.asset.url || '';
+                    const isPdf = url.toLowerCase().endsWith('.pdf');
+                    const previewSrc = isPdf ? '/placeholder-image.svg' : url;
+                    return (
+                      <StaticImage
+                        src={previewSrc}
+                        alt={doc.title}
+                        className="object-contain"
+                        fill
+                      />
+                    );
+                  })()}
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <a
                       href={doc.file.asset.url}

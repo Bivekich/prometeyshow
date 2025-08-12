@@ -67,9 +67,11 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="container mx-auto">
             <div className="max-w-3xl">
               <div className="mb-4">
-                <span className="rounded-full bg-red-600 px-4 py-2 text-sm text-white">
-                  {post.category.name}
-                </span>
+                {post.category?.name && (
+                  <span className="rounded-full bg-red-600 px-4 py-2 text-sm text-white">
+                    {post.category.name}
+                  </span>
+                )}
               </div>
               <h1 className="mb-4 text-4xl font-bold text-white md:text-5xl">
                 {post.title}
